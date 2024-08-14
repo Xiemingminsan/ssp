@@ -1,8 +1,10 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const batchSchema = new mongoose.Schema({
-    name: { type: String, required: true, unique: true }, // e.g., Grade 1, Grade 2
-    courses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'course' }], // Array of courses in this batch
+  name: { type: String, required: true, unique: true },
+  courses: [{ type: mongoose.Schema.Types.ObjectId, ref: "course" }],
+  startDate: { type: Date, required: true },
+  endDate: { type: Date, required: true },
 });
 
-export default mongoose.models.Batch || mongoose.model('batch', batchSchema);
+export default mongoose.model("batch", batchSchema) || mongoose.models.Batch;
