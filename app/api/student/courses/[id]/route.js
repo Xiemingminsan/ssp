@@ -1,5 +1,6 @@
 import dbConnect from "../../../../../dbConnect";
 import Course from "../../../../../models/course";
+import Student from "../../../../../models/student";
 import authenticate from "../../../../../auth"; // Assuming you have authentication logic
 
 export async function GET(req, { params }) {
