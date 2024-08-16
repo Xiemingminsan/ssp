@@ -1,11 +1,23 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-const conductSchema = new mongoose.Schema({
-    studentid: { type: mongoose.Schema.Types.ObjectId, ref: 'student', required: true, index: true },
-    name: { type: String, required: true },
-    typeofmisconduct: { type: String, required: true },
-    date: { type: Date, required: true, default: Date.now },
-    description: String
-});
+const conductSchema = new mongoose.Schema(
+  {
+    person: { type: String, required: true },
+    action: { type: String, required: true },
+    reason: { type: String, required: true },
+    punishment: { type: String, required: true },
+    punishmentEndDate: { type: Date },
+    log: [
+      {
+        actionType: { type: String },
+        modifiedBy: { type: String },
+        modifiedAt: { type: Date },
+        additionalInfo: { type: String },
+      },
+    ],
+  },
+  { timestamps: true }
+);
 
-export default mongoose.models.conduct || mongoose.model('conduct', conductSchema);
+export default mongoose.models.Conduct ||
+  mongoose.model("Conduct", conductSchema);
