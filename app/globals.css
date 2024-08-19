@@ -8,6 +8,33 @@
   --background-end-rgb: 255, 255, 255;
 }
 
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #f0f0f0; /* Replace with your desired background color */
+}
+
+.App {
+  display: flex;
+  height: 100%;
+  background-color: #f0f0f0; /* Ensure the background color is consistent */
+}
+
+.sidebar {
+  background-color: #1d4ed8; /* Ensure the sidebar color is applied immediately */
+  width: 250px;
+  height: 100%;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+  background-color: #ffffff; /* Main content background color */
+  overflow-y: auto;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;

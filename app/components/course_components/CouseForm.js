@@ -12,7 +12,7 @@ const CourseForm = ({ newCourseName, setNewCourseName, onSubmit }) => {
         value={newCourseName}
         onChange={(e) => setNewCourseName(e.target.value)}
         placeholder="New course name"
-        className="flex-grow p-2 border border-gray-300 rounded"
+        className="flex-grow p-2 border border-gray-300 rounded text-black"
       />
       <button
         type="submit"

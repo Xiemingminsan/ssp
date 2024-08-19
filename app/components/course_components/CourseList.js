@@ -1,38 +1,28 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation"; // Use Next.js' useRouter
 
 const CourseList = ({ courses, onDelete }) => {
-  const navigate = useNavigate();
+  const router = useRouter(); // Use useRouter instead of useNavigate
 
-  const handleEdit = (courseId) => {
-    navigate(`/EditCourse/${courseId}`);
+  const handleNavigation = (path) => {
+    router.push(path); // Navigate to the desired path
   };
 
   return (
-    <ul className="space-y-4">
+    <div>
       {courses.map((course) => (
-        <li
-          key={course._id}
-          className="flex justify-between items-center p-4 bg-gray-50 border border-gray-200 rounded-lg shadow"
-        >
-          <span className="font-medium">{course.name}</span>
-          <div className="flex space-x-2">
-            <button
-              onClick={() => handleEdit(course._id, course.name)}
-              className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition"
-            >
-              Edit
-            </button>
-            <button
-              onClick={() => onDelete(course._id)}
-              className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
-            >
-              Delete
-            </button>
-          </div>
-        </li>
+        <div key={course.id}>
+          <h3>{course.name}</h3>
+          <button
+            className="text-black"
+            onClick={() => handleNavigation(`/courses/${course.id}`)}
+          >
+            View Course
+          </button>
+          <button onClick={() => onDelete(course.id)}>Delete Course</button>
+        </div>
       ))}
-    </ul>
+    </div>
   );
 };
 
