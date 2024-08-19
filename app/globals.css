@@ -26,6 +26,17 @@ body {
     rgb(var(--background-start-rgb));
 }
 
+/* Add this to your Sidebar.css or a global CSS file */
+.sidebar-placeholder {
+  background-color: #f3f4f6; /* A light gray color to match your UI */
+  height: 100vh; /* Full height of the viewport */
+  width: 250px; /* Width of the sidebar */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ccc; /* Light color for the loading text */
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

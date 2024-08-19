@@ -1,0 +1,14 @@
+/* Add this to your CSS file */
+
+.App {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Full height of the viewport */
+  overflow: hidden; /* Prevent scrolling if necessary */
+}
+
+.content {
+  flex: 1; /* Makes content fill the remaining space */
+  overflow: auto; /* Enable scrolling within the content area if needed */
+  position: relative; /* Position relative to manage stacking context */
+}

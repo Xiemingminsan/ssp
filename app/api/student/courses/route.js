@@ -1,5 +1,5 @@
 import dbConnect from "../../../../dbConnect";
-import Course from "../../../models/../course";
+import Course from "../../../../models/course";
 import authenticate from "../../../../auth"; // Import the authenticate function
 
 export async function POST(req) {

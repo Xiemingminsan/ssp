@@ -1,0 +1,77 @@
+﻿@font-face {
+    font-family: "Poppins-Regular";
+    src: url("../fonts/poppins/Poppins-Regular.ttf");
+}
+
+@font-face {
+    font-family: "Poppins-Medium";
+    src: url("../fonts/poppins/Poppins-Medium.ttf");
+}
+
+@font-face {
+    font-family: "Poppins-SemiBold";
+    src: url("../fonts/poppins/Poppins-SemiBold.ttf");
+}
+body {
+    font-family: "Poppins-Regular";
+    font-size: 14px;
+    margin: 0;
+    color: black;
+    background-color: #fff;
+    height: 100vh;
+    background-size: cover;
+}
+
+.wrapper1 {
+    display: flex;
+}
+
+.sidebar1 {
+    width: 250px; /* Adjust width as needed */
+    height: 100vh; /* Set sidebar height to 100% viewport height */
+    overflow-y: hidden; /* Hide scrollbar but allow vertical scrolling */
+    overflow-x: hidden; /* Disable horizontal scrolling */
+    position: fixed;
+}
+
+.sidebar-content {
+    overflow-y: scroll;
+    height: calc(100vh - 160px); /* Adjust height to account for the fixed header */
+}
+
+    /* Hide scrollbar for WebKit browsers */
+    .sidebar-content::-webkit-scrollbar {
+        width: 0;
+        height: 0;
+    }
+
+/* Hide scrollbar for other browsers */
+.sidebar-content {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+.sticky-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.main-content1 {
+    flex: 1; /* Main content takes remaining space */
+    padding: 20px;
+    margin-left: 200px; /* Add margin-left equal to sidebar width */
+}
+
+.compressed .sidebar1 .logo {
+    width: 40px;
+    height: 40px;
+}
+
+.compressed .sidebar1 .title, .compressed .sidebar1 .menu-text {
+    display: none;
+}
+
+.compressed .sidebar1 {
+    width: 80px;
+}

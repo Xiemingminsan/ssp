@@ -1,0 +1,26 @@
+.background-container {
+  background: linear-gradient(
+    90deg,
+    hsla(214, 83%, 59%, 1) 0%,
+    hsla(0, 0%, 100%, 1) 100%
+  );
+  background-size: cover;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden; /* Prevent any scrolling */
+}
+
+.main-cont {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}

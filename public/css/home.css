@@ -1,0 +1,52 @@
+﻿.event-cont {
+  background-image: url("/Images/holly-transformed.jpeg");
+  background-size: cover;
+  background-position: center;
+}
+.item1 {
+  background-image: url("/Images/ban1.jpg");
+  background-size: cover;
+  background-position: center;
+}
+.item2 {
+  background-image: url("/Images/ban2.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+.item3 {
+  background-image: url("/Images/ban3.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+/* Custom styles for the carousel */
+.custom-carousel-height {
+  height: 500px; /* Adjust this value as needed */
+}
+
+.custom-carousel-item-height {
+  height: 250px; /* Adjust this value as needed */
+  width: 100%; /* Ensure the carousel items take up the full width */
+}
+
+.carousel .carousel-item {
+  border-radius: 15px; /* Adjust the radius as needed */
+  overflow: hidden; /* Ensure content doesn't spill outside the rounded corners */
+  /* Optional: Add some padding to ensure content does not touch the edges */
+  padding: 20px;
+  display: flex;
+  align-items: center; /* Center content vertically */
+  justify-content: center; /* Center content horizontally */
+}
+
+.carousel .carousel .carousel-item p {
+  margin: 0; /* Remove default margins */
+}
+
+content {
+  margin-left: 240px;
+  padding: 0px;
+  padding-top: 56px;
+  transition: margin-left 0.3s ease;
+}
