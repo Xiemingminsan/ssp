@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
 
-const displaycourseName = (courseName) => {
-  console.log(courseName);
-};
-
-const CourseForm = ({ newCourseName, setNewCourseName, onSubmit }) => {
+const CourseForm = ({
+  newCourseName,
+  setNewCourseName,
+  newCourseDescription,
+  setNewCourseDescription,
+  onSubmit,
+}) => {
   return (
     <form onSubmit={onSubmit} className="mb-6 flex space-x-4">
       <input
@@ -12,6 +15,13 @@ const CourseForm = ({ newCourseName, setNewCourseName, onSubmit }) => {
         value={newCourseName}
         onChange={(e) => setNewCourseName(e.target.value)}
         placeholder="New course name"
+        className="flex-grow p-2 border border-gray-300 rounded text-black"
+      />
+      <input
+        type="text"
+        value={newCourseDescription}
+        onChange={(e) => setNewCourseDescription(e.target.value)}
+        placeholder="Course description"
         className="flex-grow p-2 border border-gray-300 rounded text-black"
       />
       <button

@@ -7,4 +7,6 @@ const batchSchema = new mongoose.Schema({
   endDate: { type: Date, required: true },
 });
 
-export default mongoose.model("batch", batchSchema) || mongoose.models.Batch;
+const Batch = mongoose.model("batch", batchSchema) || mongoose.models.Batch;
+
+export default Batch;

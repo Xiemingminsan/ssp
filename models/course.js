@@ -6,4 +6,7 @@ const courseSchema = new mongoose.Schema({
   // No reference to batch here to allow flexibility
 });
 
-export default mongoose.model("course", courseSchema) || mongoose.models.Course;
+// Check if the model already exists before creating a new one
+const Course = mongoose.models.Course || mongoose.model("Course", courseSchema);
+
+export default Course;
