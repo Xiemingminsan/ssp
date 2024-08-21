@@ -16,7 +16,9 @@ export async function GET(req) {
 
   try {
     // Fetch all requests with status 'pending'
-    const pendingRequests = await Request.find({ status: "pending" });
+    const pendingRequests = await Request.find({ status: "pending" })
+      .populate("user", "username") // Populate user with the 'username' field
+      .populate("item", "name"); // Populate item with the 'name' field
 
     return new Response(JSON.stringify(pendingRequests), {
       status: 200,

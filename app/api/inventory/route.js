@@ -71,6 +71,7 @@ export async function GET(req) {
 
   try {
     const items = await Item.find();
+    // const items = await Item.find({ isArchived: false });
     return new Response(JSON.stringify(items), {
       status: 200,
       headers: { "Content-Type": "application/json" },

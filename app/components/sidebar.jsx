@@ -30,7 +30,7 @@ const Sidebar = () => {
     { name: "አመራሮች", path: "/hierarachy", icon: <ManagementIcon /> },
     { name: "ተማሪዎች", path: "/students", icon: <StudentsIcon /> },
     { name: "የትምህርት ክፍላት", path: "/batches", icon: <BatchIcon /> },
-    { name: "ቁሳቁሶች", path: "#", icon: <ItemsIcon /> },
+    { name: "ቁሳቁሶች", path: "/items", icon: <ItemsIcon /> },
     { name: "ወጪ ገቢ", path: "#", icon: <ExpenseIcon /> },
     { name: "ደብዳቤዎች", path: "#", icon: <LettersIcon /> },
     { name: "ተጠቃሚዎች", path: "#", icon: <UsersIcon /> },

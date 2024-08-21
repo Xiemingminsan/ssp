@@ -2,10 +2,11 @@ import dbConnect from "../../../../../dbConnect";
 import Request from "../../../../../models/request";
 import authenticate from "../../../../../auth";
 
-export async function GET(req) {
+export async function POST(req) {
   const authData = await authenticate(req);
 
-  if (!authData) {
+  // Authentication check
+  if (!authData || !["admin", "manager", "user"].includes(authData.role)) {
     return new Response(JSON.stringify({ message: "Unauthorized" }), {
       status: 401,
       headers: { "Content-Type": "application/json" },
@@ -15,17 +16,31 @@ export async function GET(req) {
   await dbConnect();
 
   try {
-    // Fetch all requests made by the authenticated user
-    const requests = await Request.find({
-      user: authData.userId,
-    }).populate("item", "-logs");
+    const { itemId, quantity, requestType } = await req.json();
 
-    return new Response(JSON.stringify(requests), {
-      status: 200,
+    if (!itemId || !quantity || !requestType) {
+      return new Response(
+        JSON.stringify({ message: "Item ID and quantity are required" }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
+    console.log("itemId", authData.userId);
+    const newRequest = await Request.create({
+      item: itemId,
+      user: authData.userId,
+      quantity,
+      requestType,
+    });
+
+    return new Response(JSON.stringify(newRequest), {
+      status: 201,
       headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
-    console.error("Error fetching user requests:", error.message);
     return new Response(
       JSON.stringify({
         message: "Internal Server Error",

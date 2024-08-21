@@ -139,6 +139,9 @@ export async function DELETE(req, { params }) {
       });
     }
 
+    item.isArchived = true; // Mark the item as archived
+    console.log(item.isArchived);
+    console.log("item", item);
     // Create a log entry for the deletion
     item.logs.push({
       actionType: "delete",
@@ -152,7 +155,6 @@ export async function DELETE(req, { params }) {
     });
 
     await item.save();
-    await Item.findByIdAndDelete(id);
 
     return new Response(
       JSON.stringify({ message: "Item deleted successfully" }),

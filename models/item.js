@@ -14,7 +14,7 @@ const itemSchema = new mongoose.Schema({
     {
       actionType: {
         type: String,
-        enum: ["update", "requestApproval", "requestDenial"],
+        enum: ["update", "requestApproval", "requestDenial", "delete"],
         required: true,
       },
       previousState: {
@@ -36,6 +36,7 @@ const itemSchema = new mongoose.Schema({
       additionalInfo: { type: String },
     },
   ],
+  isArchived: { type: Boolean, default: false }, // New field
 });
 
 export default mongoose.models.item || mongoose.model("item", itemSchema);
