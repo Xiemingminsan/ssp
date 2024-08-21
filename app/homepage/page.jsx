@@ -95,32 +95,32 @@ const LandingPage = ({
               <div className="grid grid-rows-3 gap-6">
                 <div className="bg-white rounded-lg shadow custom-shadow p-4 fixed-height relative event-cont">
                   <div className="content">
-                    <h2 className="text-xl text-white font-bold mb-2">
+                    <h2 className="text-xl text-black font-bold mb-2">
                       ቀጣይ ፕሮግራም
                     </h2>
                     {upcomingEvent ? (
                       <div className="relative">
                         <div className="absolute top-4 left-4">
-                          <h6 className="text-xl text-white">
+                          <h6 className="text-xl text-black">
                             {upcomingEvent.reason}
                           </h6>
-                          <h6 className="text-xl text-white">
+                          <h6 className="text-xl text-black">
                             የተያዘው: በ {upcomingEvent.booker}
                           </h6>
-                          <h6 className="text-white">
+                          <h6 className="text-black">
                             ስልክ ቁጥር: {upcomingEvent.phone}
                           </h6>
-                          <p className="text-white">
+                          <p className="text-black">
                             {new Date(upcomingEvent.date).toLocaleDateString()}
                           </p>
                         </div>
                       </div>
                     ) : (
-                      <p>ምንም አይነት ፕሮግራም የለም!</p>
+                      <p className="text-black">ምንም አይነት ፕሮግራም የለም!</p>
                     )}
                   </div>
                   <Link href="/event" passHref>
-                    <button className="bg-blue-500 text-white px-4 py-2 rounded-lg absolute bottom-4 right-4">
+                    <button className="bg-blue-500 text-black px-4 py-2 rounded-lg absolute bottom-4 right-4">
                       Show Calendar
                     </button>
                   </Link>
@@ -128,7 +128,7 @@ const LandingPage = ({
 
                 <div className="grid grid-cols-2 gap-6">
                   <div className="bg-white rounded-lg shadow custom-shadow p-4 fixed-height">
-                    <h2 className="font-bold text-lg mb-4">ቁሳቁሶች</h2>
+                    <h2 className="font-bold text-black mb-4">ቁሳቁሶች</h2>
                     <canvas
                       id="inventoryChart"
                       width="200"
@@ -137,7 +137,7 @@ const LandingPage = ({
                   </div>
 
                   <div className="bg-white rounded-lg shadow custom-shadow p-4 fixed-height">
-                    <h2 className="font-bold text-lg mb-4">የአስትዳደር መዋቅር</h2>
+                    <h2 className="font-bold text-black mb-4">የአስትዳደር መዋቅር</h2>
                     <div className="space-y-4">
                       {hierarchies &&
                         hierarchies
@@ -149,7 +149,7 @@ const LandingPage = ({
                           .map((hierarchy, index) => (
                             <div
                               key={index}
-                              className="p-2 bg-gray-100 rounded custom-shadow"
+                              className="p-2 bg-gray-100 rounded custom-shadow text-black"
                             >
                               <h6>{hierarchy.name}</h6>
                               <p>{hierarchy.position}</p>
@@ -163,13 +163,13 @@ const LandingPage = ({
 
             <div className="lg:col-span-1">
               <div className="bg-white rounded-lg shadow custom-shadow p-4 fixed-height2 mb-6">
-                <h2 className="font-bold text-lg mb-4">የደብዳቤ ልውውጦች</h2>
+                <h2 className="font-bold text-black mb-4">የደብዳቤ ልውውጦች</h2>
                 <div className="space-y-4">
                   {letters &&
                     letters.slice(0, 2).map((letter, index) => (
                       <div key={index} className="flex items-center space-x-4">
                         {letter.typeOfLetter === "ወጪ" ? (
-                          <i className="fas fa-paper-plane fa-3x text-green-500"></i>
+                          <i className="fas fa-paper-plane fa-3x text-black"></i>
                         ) : (
                           <i className="fas fa-envelope-open-text fa-3x text-blue-500"></i>
                         )}
@@ -187,7 +187,7 @@ const LandingPage = ({
               </div>
 
               <div className="bg-white rounded-lg shadow custom-shadow p-4 fixed-height">
-                <h2 className="font-bold text-lg mb-4">ወጪ ገቢ</h2>
+                <h2 className="font-bold text-black mb-4">ወጪ ገቢ</h2>
                 <div className="space-y-4">
                   {expenses &&
                     expenses.slice(0, 7).map((expense, index) => (

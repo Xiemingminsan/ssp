@@ -1,5 +1,6 @@
 import dbConnect from "../../../../dbConnect";
 import Batch from "../../../../models/batch";
+import authenticate from "../../../../auth";
 
 export async function POST(req) {
   await dbConnect();
@@ -44,10 +45,19 @@ export async function POST(req) {
 }
 
 export async function GET(req) {
+  const authData = await authenticate(req);
+
+  if (!authData || !["admin", "manager", "user"].includes(authData.role)) {
+    return new Response(JSON.stringify({ message: "Unauthorized" }), {
+      status: 401,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
   await dbConnect();
 
   try {
-    const batches = await Batch.find();
+    const batches = await Batch.find().populate("courses"); // Populate courses
     return new Response(JSON.stringify(batches), {
       status: 200,
       headers: { "Content-Type": "application/json" },

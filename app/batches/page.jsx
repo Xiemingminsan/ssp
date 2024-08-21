@@ -1,20 +1,22 @@
-// app/batches/page.js
-
-"use client"; // Because you are using state and effects
+"use client";
 
 import React, { useState, useEffect } from "react";
-import BatchList from "../../components/batch_components/BatchList";
-import BatchForm from "../../components/batch_components/BatchForm";
+import axios from "axios";
+import Protection from "../Protection";
+import Layout from "../components/layout";
+import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
 import {
-  fetchBatches,
-  createBatch,
-  deleteBatch,
-} from "../../services/batchServices";
-import { showSuccessToast, showErrorToast } from "../../utils/toastUtils";
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  IconButton,
+} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function BatchManager() {
   const [batches, setBatches] = useState([]);
-  const [newBatchName, setNewBatchName] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     loadBatches();
@@ -22,50 +24,97 @@ export default function BatchManager() {
 
   const loadBatches = async () => {
     try {
-      const fetchedBatches = await fetchBatches();
-      setBatches(fetchedBatches);
+      const response = await axios.get("/api/student/batches");
+      setBatches(response.data);
     } catch (error) {
       showErrorToast("Error fetching batches");
     }
   };
 
-  const handleCreateBatch = async (e) => {
-    e.preventDefault();
+  const handleRemoveCourse = async (batchId, courseId) => {
     try {
-      console.log(newBatchName);
-      await createBatch(newBatchName);
-      setNewBatchName(""); // Reset the new batch name input
+      await axios.put(`/api/student/batches/${batchId}`, {
+        course: courseId,
+        action: "remove",
+      });
       loadBatches();
-      showSuccessToast("Batch added successfully");
+      showSuccessToast("Course removed successfully");
     } catch (error) {
-      showErrorToast("Error creating batch");
+      showErrorToast("Error removing course");
     }
   };
 
-  const handleDeleteBatch = async (batchId) => {
-    try {
-      await deleteBatch(batchId);
-      loadBatches();
-      showSuccessToast("Batch deleted successfully");
-    } catch (error) {
-      showErrorToast("Error deleting batch");
-    }
+  const filterBatches = () => {
+    const lowercasedFilter = searchTerm.toLowerCase();
+    return batches.filter((batch) =>
+      batch.name.toLowerCase().includes(lowercasedFilter)
+    );
   };
+
+  const filteredBatches = filterBatches();
 
   return (
-    <div className="min-h-screen p-6">
-      <div className="max-w-4xl mx-auto bg-white p-8 shadow-sm rounded-lg">
-        <h1 className="text-2xl font-bold mb-6">Batch Manager</h1>
-        <BatchForm
-          newBatchName={newBatchName}
-          setNewBatchName={setNewBatchName}
-          onSubmit={handleCreateBatch}
-        />
-        <BatchList
-          batches={batches} // Ensure you're passing the correct prop
-          onDelete={handleDeleteBatch}
-        />
-      </div>
-    </div>
+    <Protection>
+      <Layout>
+        <div className="min-h-screen p-6 bg-gray-100">
+          <div className="max-w-4xl mx-auto bg-white p-6 shadow-md rounded-lg">
+            <div className="flex justify-between items-center mb-6">
+              <h1 className="text-2xl font-bold text-gray-800">
+                Batch Manager
+              </h1>
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search batches..."
+                className="p-2 border border-gray-300 rounded-lg w-64 text-gray-800"
+              />
+            </div>
+            <div>
+              {filteredBatches.length > 0 ? (
+                filteredBatches.map((batch) => (
+                  <Accordion key={batch._id}>
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                      <h3 className="text-xl font-semibold text-gray-800">{`${batch.name} (${batch.courses.length} courses)`}</h3>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      {batch.courses.length > 0 ? (
+                        batch.courses.map((course) => (
+                          <div
+                            key={course._id}
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignItems: "center",
+                              marginBottom: "8px",
+                            }}
+                          >
+                            <p className="text-gray-500">{course.name}</p>
+                            <IconButton
+                              style={{ color: "red" }}
+                              onClick={() =>
+                                handleRemoveCourse(batch._id, course._id)
+                              }
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </div>
+                        ))
+                      ) : (
+                        <span>No courses available.</span>
+                      )}
+                    </AccordionDetails>
+                  </Accordion>
+                ))
+              ) : (
+                <span className="text-center" color="textSecondary">
+                  No batches available.
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+      </Layout>
+    </Protection>
   );
 }

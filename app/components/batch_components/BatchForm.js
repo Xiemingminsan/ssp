@@ -1,23 +1,36 @@
-import React from "react";
+import React, { useState } from "react";
 
-const BatchForm = ({ newBatchName, setNewBatchName, onSubmit }) => {
+const CourseForm = ({
+  newCourseName,
+  setNewCourseName,
+  newCourseDescription,
+  setNewCourseDescription,
+  onSubmit,
+}) => {
   return (
     <form onSubmit={onSubmit} className="mb-6 flex space-x-4">
       <input
         type="text"
-        value={newBatchName}
-        onChange={(e) => setNewBatchName(e.target.value)}
+        value={newCourseName}
+        onChange={(e) => setNewCourseName(e.target.value)}
         placeholder="New course name"
-        className="flex-grow p-2 border border-gray-300 rounded"
+        className="flex-grow p-2 border border-gray-300 rounded text-black"
+      />
+      <input
+        type="text"
+        value={newCourseDescription}
+        onChange={(e) => setNewCourseDescription(e.target.value)}
+        placeholder="Course description"
+        className="flex-grow p-2 border border-gray-300 rounded text-black"
       />
       <button
         type="submit"
         className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
       >
-        Add Batch
+        Add Course
       </button>
     </form>
   );
 };
 
-export default BatchForm;
+export default CourseForm;

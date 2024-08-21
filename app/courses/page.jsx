@@ -1,10 +1,10 @@
-"use client"; // Required for using hooks and client-side logic
+"use client";
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import CourseList from "../components/course_components/CourseList";
-import CourseForm from "../components/course_components/CouseForm"; // Corrected import path
-import Protection from "../Protection"; // Import the Protection component
+import CourseForm from "../components/course_components/CouseForm";
+import Protection from "../Protection";
 import Layout from "../components/layout";
 import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
 
@@ -14,9 +14,12 @@ export default function CourseManager() {
   const [searchTerm, setSearchTerm] = useState("");
   const [newCourseName, setNewCourseName] = useState("");
   const [newCourseDescription, setNewCourseDescription] = useState("");
+  const [selectedBatches, setSelectedBatches] = useState([]);
+  const [batches, setBatches] = useState([]); // State to hold batch data
 
   useEffect(() => {
     loadCourses();
+    fetchBatches(); // Fetch batches when the component loads
   }, []);
 
   useEffect(() => {
@@ -44,15 +47,51 @@ export default function CourseManager() {
     }
   };
 
-  const createCourse = async (courseName, courseDescription) => {
+  const fetchBatches = async () => {
     try {
-      await axios.post("/api/student/courses", {
+      const response = await axios.get("/api/student/batches");
+      setBatches(response.data); // Store fetched batches
+    } catch (error) {
+      showErrorToast("Error fetching batches");
+    }
+  };
+
+  const createCourse = async (
+    courseName,
+    courseDescription,
+    selectedBatches
+  ) => {
+    try {
+      const courseResponse = await axios.post("/api/student/courses", {
         name: courseName,
         description: courseDescription,
       });
-      loadCourses(); // Reload courses after adding a new one
+
+      const courseId = courseResponse.data.course._id;
+      console.log("Course ID:", courseId);
+      console.log("Selected Batches:", selectedBatches);
+
+      if (!courseId) {
+        throw new Error("Course ID is undefined. Check API response.");
+      }
+
+      if (selectedBatches.length > 0) {
+        for (const batchId of selectedBatches) {
+          await axios.put(`/api/student/batches/${batchId}`, {
+            course: courseId,
+            action: "add  ",
+          });
+        }
+        console.log(selectedBatches);
+        loadCourses(); // Reload courses after adding a new one
+        showSuccessToast("Course added successfully with selected batches");
+      } else {
+        loadCourses(); // Reload courses after adding a new one
+        showSuccessToast("Course added successfully");
+      }
     } catch (error) {
-      throw new Error(
+      console.error("Error creating course:", error);
+      showErrorToast(
         error.response?.data?.message || "Failed to create course"
       );
     }
@@ -62,20 +101,20 @@ export default function CourseManager() {
     try {
       await axios.delete(`/api/student/courses/${courseId}`);
       loadCourses();
+      showSuccessToast("Course deleted successfully");
     } catch (error) {
-      throw new Error(
+      showErrorToast(
         error.response?.data?.message || "Failed to delete course"
       );
     }
   };
 
-  const handleCreateCourse = async (e) => {
-    e.preventDefault();
+  const handleCreateCourse = async () => {
     try {
-      await createCourse(newCourseName, newCourseDescription);
+      await createCourse(newCourseName, newCourseDescription, selectedBatches);
       setNewCourseName(""); // Reset the input after creation
       setNewCourseDescription(""); // Reset description after creation
-      showSuccessToast("Course added successfully");
+      setSelectedBatches([]); // Reset batches after creation
     } catch (error) {
       showErrorToast(error.message);
     }
@@ -84,7 +123,6 @@ export default function CourseManager() {
   const handleDeleteCourse = async (courseId) => {
     try {
       await deleteCourse(courseId);
-      showSuccessToast("Course deleted successfully");
     } catch (error) {
       showErrorToast(error.message);
     }
@@ -104,24 +142,29 @@ export default function CourseManager() {
   return (
     <Protection>
       <Layout>
-        <div className="min-h-screen p-6">
-          <div className="max-w-4xl mx-auto bg-white p-8 shadow-sm rounded-lg">
-            <h1 className="text-2xl font-bold mb-6 text-black">
-              Course Manager
-            </h1>
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search courses"
-              className="mb-4 p-2 border border-gray-300 rounded text-black w-full"
-            />
+        <div className="min-h-screen p-6 bg-gray-100">
+          <div className="max-w-4xl mx-auto bg-white p-6 shadow-md rounded-lg">
+            <div className="flex justify-between items-center mb-6">
+              <h1 className="text-2xl font-bold text-gray-800">
+                Course Manager
+              </h1>
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search courses..."
+                className="p-2 border border-gray-300 rounded-lg w-64 text-gray-800"
+              />
+            </div>
             <CourseForm
               newCourseName={newCourseName}
               setNewCourseName={setNewCourseName}
               newCourseDescription={newCourseDescription}
               setNewCourseDescription={setNewCourseDescription}
+              selectedBatches={selectedBatches}
+              setSelectedBatches={setSelectedBatches}
               onSubmit={handleCreateCourse}
+              batches={batches} // Pass the fetched batches to CourseForm
             />
             <CourseList
               courses={filteredCourses}
