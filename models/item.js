@@ -4,6 +4,15 @@ const itemSchema = new mongoose.Schema({
   name: { type: String, required: true, unique: true },
   description: { type: String },
   quantity: { type: Number, required: true },
+  availableQuantity: { type: Number, required: true }, // available = total - loaned
+  loanedQuantity: { type: Number, default: 0 }, // Track loaned quantity
+  loanedItems: [
+    {
+      user: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
+      quantity: { type: Number },
+      dueDate: { type: Date },
+    },
+  ],
   lastModifiedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "user",

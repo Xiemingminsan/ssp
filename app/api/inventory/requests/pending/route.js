@@ -18,7 +18,11 @@ export async function GET(req) {
     // Fetch all requests with status 'pending'
     const pendingRequests = await Request.find({ status: "pending" })
       .populate("user", "username") // Populate user with the 'username' field
-      .populate("item", "name"); // Populate item with the 'name' field
+      .populate("item", "name") // Populate item with the 'name' field
+      .populate({
+        path: "item",
+        select: "name quantity availableQuantity loanedQuantity loanedItems", // Explicitly select the fields you need
+      });
 
     return new Response(JSON.stringify(pendingRequests), {
       status: 200,

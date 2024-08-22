@@ -20,7 +20,7 @@ export async function PUT(req, { params }) {
 
   try {
     // Fetch the request and populate the item field
-    const request = await Request.findById(id).populate("item");
+    const request = await Request.findById(id).populate("item user");
     if (!request) {
       return new Response(JSON.stringify({ message: "Request not found" }), {
         status: 404,
@@ -28,51 +28,80 @@ export async function PUT(req, { params }) {
       });
     }
 
-    let previousQuantity = null;
-    let newQuantity = null;
+    let previousAvailableQuantity = null;
+    let newAvailableQuantity = null;
 
     if (status === "approved") {
       if (request.item) {
-        // Fetch the item's current quantity
         const item = await Item.findById(request.item._id);
-        previousQuantity = item.quantity;
-        console.log("previousQuantity", previousQuantity);
+        previousAvailableQuantity = item.availableQuantity;
 
-        // Update the item's quantity based on request type
         if (request.requestType === "takeOut") {
-          await Item.findByIdAndUpdate(request.item._id, {
-            $inc: { quantity: -request.quantity },
+          if (request.quantity > item.availableQuantity) {
+            return new Response(
+              JSON.stringify({ message: "Not enough items available" }),
+              { status: 400, headers: { "Content-Type": "application/json" } }
+            );
+          }
+
+          // Update availableQuantity and loanedQuantity
+          item.availableQuantity -= request.quantity;
+          item.loanedQuantity += request.quantity;
+
+          // Add this loan to the loanedItems array
+          item.loanedItems.push({
+            user: request.user._id,
+            quantity: request.quantity,
+            dueDate: request.dueDate || null, // Set due date if applicable
           });
         } else if (request.requestType === "return") {
-          await Item.findByIdAndUpdate(request.item._id, {
-            $inc: { quantity: request.quantity },
-          });
+          item.availableQuantity += request.quantity;
+          item.loanedQuantity -= request.quantity;
+
+          // Handle the return by adjusting or removing from loanedItems
+          let remainingQuantity = request.quantity;
+
+          // Iterate over the loanedItems array
+          for (let i = item.loanedItems.length - 1; i >= 0; i--) {
+            let loan = item.loanedItems[i];
+
+            if (loan.user.toString() === request.user._id.toString()) {
+              if (remainingQuantity >= loan.quantity) {
+                // If the returned quantity is greater than or equal to this loan entry, remove it
+                remainingQuantity -= loan.quantity;
+                item.loanedItems.splice(i, 1); // Remove this entry from loanedItems
+              } else {
+                // If only part of the loan is returned, adjust the quantity
+                loan.quantity -= remainingQuantity;
+                remainingQuantity = 0;
+                break; // All returned items accounted for, no need to continue
+              }
+            }
+
+            if (remainingQuantity <= 0) break; // Stop if all returned items have been accounted for
+          }
         }
 
-        // Fetch the updated item's quantity
-        const updatedItem = await Item.findById(request.item._id);
-        console.log("updatedItem", updatedItem);
-        newQuantity = updatedItem.quantity;
-        console.log("newQuantity", newQuantity);
+        await item.save();
 
-        // Calculate quantity change
-        const quantityChange = newQuantity - previousQuantity;
+        // Fetch the updated available quantity
+        newAvailableQuantity = item.availableQuantity;
 
         // Log the quantity change
         request.logs.push({
           actionType: "requestApproved",
           previousState: {
             status: request.status,
-            quantity: previousQuantity,
+            quantity: previousAvailableQuantity,
           },
           newState: {
             status,
-            quantity: newQuantity,
+            quantity: newAvailableQuantity,
           },
           modifiedBy: authData.userId,
           modifiedAt: new Date(),
           additionalInfo: "Request status Approved",
-          quantityChange,
+          quantityChange: newAvailableQuantity - previousAvailableQuantity,
         });
       }
     } else if (status === "denied") {

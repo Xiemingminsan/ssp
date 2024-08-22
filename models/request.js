@@ -11,7 +11,13 @@ const requestSchema = new mongoose.Schema(
       default: "pending",
     },
     requestType: { type: String, enum: ["takeOut", "return"], required: true },
+    loanStatus: {
+      type: String,
+      enum: ["onLoan", "returned"],
+      default: "onLoan",
+    },
     handledBy: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
+    dueDate: { type: Date }, // Optional, for return deadline
     logs: [
       {
         actionType: {

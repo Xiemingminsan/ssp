@@ -7,12 +7,15 @@ import Layout from "../components/layout";
 import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
 import { IconButton, Badge, Button, Modal, Box } from "@mui/material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
+import LoadingScreen from "../components/LoadingScreen";
+import { set } from "mongoose";
 
 export default function RequestManager() {
   const [requests, setRequests] = useState([]);
   const [pendingCount, setPendingCount] = useState(0);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [logModalOpen, setLogModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadRequests();
@@ -20,6 +23,7 @@ export default function RequestManager() {
 
   const loadRequests = async () => {
     try {
+      setLoading(true); // Start loading
       const fetchedRequests = await fetchRequests();
       setRequests(fetchedRequests);
       const pendingRequests = fetchedRequests.filter(
@@ -28,6 +32,8 @@ export default function RequestManager() {
       setPendingCount(pendingRequests.length);
     } catch (error) {
       showErrorToast("Error fetching requests");
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
@@ -81,6 +87,7 @@ export default function RequestManager() {
   return (
     <Protection>
       <Layout>
+        {loading && <LoadingScreen />}
         <div className="min-h-screen p-6 bg-gray-100">
           <div className="max-w-6xl mx-auto bg-white p-6 shadow-md rounded-lg">
             <div className="flex justify-between items-center mb-6">
@@ -97,16 +104,27 @@ export default function RequestManager() {
                   >
                     <div>
                       <h3 className="text-lg font-semibold text-gray-800">
-                        {request.item?.name || "Item name not available"}{" "}
-                        {/* Show item name or a fallback */}
+                        {request.item?.name || "Item name not available"}
+                        {console.log(request.item)}
                       </h3>
                       <p className="text-gray-600">
-                        Quantity: {request.quantity}
+                        Total Quantity: {request.item?.quantity}
                       </p>
+                      <p className="text-gray-600">
+                        Available: {request.item?.availableQuantity}
+                      </p>
+
                       <p className="text-gray-500">
                         Requested by:{" "}
-                        {request.user?.username || "User name not available"}{" "}
-                        {/* Show user name or a fallback */}
+                        {request.user?.username || "User name not available"}
+                      </p>
+                      <p className="text-gray-500">
+                        Requested amount:{" "}
+                        {request.quantity || "Quantity not available"}
+                      </p>
+                      <p className="text-gray-500">
+                        Request Status:{" "}
+                        {request.requestType || "requestType not available"}
                       </p>
                       <p className="text-gray-500">
                         Request Date:{" "}

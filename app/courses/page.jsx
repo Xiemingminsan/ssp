@@ -7,6 +7,7 @@ import CourseForm from "../components/course_components/CouseForm";
 import Protection from "../Protection";
 import Layout from "../components/layout";
 import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
+import LoadingScreen from "../components/LoadingScreen";
 
 export default function CourseManager() {
   const [courses, setCourses] = useState([]);
@@ -16,6 +17,7 @@ export default function CourseManager() {
   const [newCourseDescription, setNewCourseDescription] = useState("");
   const [selectedBatches, setSelectedBatches] = useState([]);
   const [batches, setBatches] = useState([]); // State to hold batch data
+  const [loading, setLoading] = useState(true); // Add this state
 
   useEffect(() => {
     loadCourses();
@@ -28,11 +30,14 @@ export default function CourseManager() {
 
   const loadCourses = async () => {
     try {
+      setLoading(true); // Start loading
       const fetchedCourses = await fetchCourses();
       setCourses(fetchedCourses);
       setFilteredCourses(fetchedCourses); // Initially display all courses
     } catch (error) {
       showErrorToast("Error fetching courses");
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
@@ -142,6 +147,7 @@ export default function CourseManager() {
   return (
     <Protection>
       <Layout>
+        {loading && <LoadingScreen />}
         <div className="min-h-screen p-6 bg-gray-100">
           <div className="max-w-4xl mx-auto bg-white p-6 shadow-md rounded-lg">
             <div className="flex justify-between items-center mb-6">

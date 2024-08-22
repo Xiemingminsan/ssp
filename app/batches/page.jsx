@@ -5,6 +5,7 @@ import axios from "axios";
 import Protection from "../Protection";
 import Layout from "../components/layout";
 import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
+import LoadingScreen from "../components/LoadingScreen";
 import {
   Accordion,
   AccordionSummary,
@@ -17,6 +18,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 export default function BatchManager() {
   const [batches, setBatches] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadBatches();
@@ -24,10 +26,13 @@ export default function BatchManager() {
 
   const loadBatches = async () => {
     try {
+      setLoading(true);
       const response = await axios.get("/api/student/batches");
       setBatches(response.data);
     } catch (error) {
       showErrorToast("Error fetching batches");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -56,6 +61,7 @@ export default function BatchManager() {
   return (
     <Protection>
       <Layout>
+        {loading && <LoadingScreen />}
         <div className="min-h-screen p-6 bg-gray-100">
           <div className="max-w-4xl mx-auto bg-white p-6 shadow-md rounded-lg">
             <div className="flex justify-between items-center mb-6">

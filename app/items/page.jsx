@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ItemList from "../components/item_components/ItemList";
 import ItemForm from "../components/item_components/ItemForm";
+import LoadingScreen from "../components/LoadingScreen";
 import Protection from "../Protection";
 import Layout from "../components/layout";
 import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
@@ -19,19 +20,24 @@ export default function ItemManager() {
   const [newItemQuantity, setNewItemQuantity] = useState("");
   const [newItemDescription, setNewItemDescription] = useState("");
   const [pendingCount, setPendingCount] = useState(0); // State to manage pending requests count
+  const [loading, setLoading] = useState(true); // Add this state
 
   useEffect(() => {
     loadItems();
     loadPendingRequestsCount(); // Load pending requests count on component mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadItems = async () => {
     try {
+      setLoading(true); // Start loading
       const fetchedItems = await fetchItems();
       setItems(fetchedItems);
       setFilteredItems(fetchedItems); // Initially display all items
     } catch (error) {
       showErrorToast("Error fetching items");
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
@@ -144,6 +150,8 @@ export default function ItemManager() {
   return (
     <Protection>
       <Layout>
+        {loading && <LoadingScreen />}
+
         <div className="min-h-screen p-6 bg-gray-100">
           <div className="max-w-4xl mx-auto bg-white p-6 shadow-md rounded-lg">
             <div className="flex justify-between items-center mb-6">

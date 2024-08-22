@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Protection from "../../Protection";
 import Layout from "../../components/layout";
+import LoadingScreen from "../../components/LoadingScreen";
 import { showErrorToast } from "../../utils/toastUtils";
 import { showSuccessToast } from "../../utils/toastUtils";
 
@@ -19,6 +20,7 @@ export default function RequestHistory() {
   const [requests, setRequests] = useState([]);
   const [filteredRequests, setFilteredRequests] = useState([]);
   const [statusFilter, setStatusFilter] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadRequests();
@@ -30,11 +32,14 @@ export default function RequestHistory() {
 
   const loadRequests = async () => {
     try {
+      setLoading(true); // Start loading
       const response = await axios.get("/api/inventory/requests/query");
       setRequests(response.data);
       setFilteredRequests(response.data); // Initially display all requests
     } catch (error) {
       showErrorToast("Error fetching requests");
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
@@ -62,6 +67,7 @@ export default function RequestHistory() {
   return (
     <Protection>
       <Layout>
+        {loading && <LoadingScreen />}
         <div className="min-h-screen p-6 bg-gray-100">
           <div className="max-w-6xl mx-auto bg-white p-6 shadow-md rounded-lg">
             <h1 className="text-2xl font-bold text-gray-800 mb-6">

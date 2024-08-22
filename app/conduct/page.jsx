@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -8,6 +9,7 @@ import Protection from "../Protection";
 import Layout from "../components/layout";
 import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
 import { Button } from "@mui/material";
+import LoadingScreen from "../components/LoadingScreen";
 
 export default function ConductManager() {
   const [conducts, setConducts] = useState([]);
@@ -15,6 +17,7 @@ export default function ConductManager() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedConduct, setSelectedConduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true); // Add this state
 
   useEffect(() => {
     loadConducts();
@@ -22,11 +25,14 @@ export default function ConductManager() {
 
   const loadConducts = async () => {
     try {
+      setLoading(true); // Start loading
       const fetchedConducts = await fetchConducts();
       setConducts(fetchedConducts);
       setFilteredConducts(fetchedConducts); // Initially display all conducts
     } catch (error) {
       showErrorToast("Error fetching conducts");
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 

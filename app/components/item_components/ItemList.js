@@ -27,14 +27,35 @@ const ItemList = ({ items, onDelete, onEdit }) => {
             className="flex justify-between items-center bg-gray-50 p-4 rounded-lg shadow-sm"
           >
             <div>
-              <h3 className="text-xl font-semibold text-gray-800">
+              <h3 className="text-lg font-semibold text-gray-800">
                 {item.name}
               </h3>
-              <p className="text-gray-600">Quantity: {item.quantity}</p>
+              <p className="text-gray-600">Total Quantity: {item.quantity}</p>
+              <p className="text-gray-600">
+                Available: {item.availableQuantity}
+              </p>
               {item.description && (
-                <p className="text-gray-500">{item.description}</p>
+                <p className="text-gray-500">Description: {item.description}</p>
               )}
+              <details className="text-black">
+                <summary>Loaned Items</summary>
+                {Array.isArray(item.loanedItems) &&
+                item.loanedItems.length > 0 ? (
+                  item.loanedItems.map((loan, index) => (
+                    <div key={index}>
+                      <p>Taker: {loan.user.username}</p>
+                      <p>Quantity: {loan.quantity}</p>
+                      <p>
+                        Due Date: {new Date(loan.dueDate).toLocaleDateString()}
+                      </p>
+                    </div>
+                  ))
+                ) : (
+                  <p>No items currently loaned out.</p>
+                )}
+              </details>
             </div>
+
             <div className="space-x-2">
               <IconButton
                 style={{ color: "blue" }}

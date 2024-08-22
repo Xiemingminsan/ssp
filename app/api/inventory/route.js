@@ -34,6 +34,7 @@ export async function POST(req) {
       name,
       description,
       quantity,
+      availableQuantity: quantity, // Set available quantity to the total quantity
       lastModifiedBy: authData.userId, // Set the user who added the item
     });
 

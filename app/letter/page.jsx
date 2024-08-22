@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import LetterList from "../components/letter_components/LetterList";
 import EditLetter from "../components/letter_components/EditLetter";
+import LoadingScreen from "../components/LoadingScreen";
 import Protection from "../Protection";
 import Layout from "../components/layout";
 import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
@@ -19,6 +20,7 @@ export default function LetterManager() {
   const [selectedLetter, setSelectedLetter] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [pendingCount, setPendingCount] = useState(0);
+  const [loading, setLoading] = useState(true); // Add this state
 
   useEffect(() => {
     loadLetters();
@@ -26,11 +28,14 @@ export default function LetterManager() {
 
   const loadLetters = async () => {
     try {
+      setLoading(true); // Start loading
       const fetchedLetters = await fetchLetters();
       setLetters(fetchedLetters);
       setFilteredLetters(fetchedLetters); // Initially display all letters
     } catch (error) {
       showErrorToast("Error fetching letters");
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
@@ -182,6 +187,7 @@ export default function LetterManager() {
   return (
     <Protection>
       <Layout>
+        {loading && <LoadingScreen />}
         <div className="min-h-screen p-6 bg-gray-100">
           <div className="max-w-4xl mx-auto bg-white p-6 shadow-md rounded-lg">
             <div className="flex justify-between items-center mb-6">

@@ -4,6 +4,7 @@ import "../../public/css/login.css";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
+// import { setRole } from "next-auth/client";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");

@@ -16,13 +16,17 @@ import {
   TextField,
 } from "@mui/material";
 import Link from "next/link";
+import LoadingScreen from "../components/LoadingScreen";
+import { set } from "mongoose";
 
 export default function NewRequest() {
   const [items, setItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [requestType, setRequestType] = useState(""); // Empty until the user selects
+  const [dueDate, setDueDate] = useState("");
   const [quantity, setQuantity] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadItems();
@@ -30,10 +34,13 @@ export default function NewRequest() {
 
   const loadItems = async () => {
     try {
+      setLoading(true); // Start loading
       const response = await axios.get("/api/inventory");
       setItems(response.data);
     } catch (error) {
       showErrorToast("Error fetching items");
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
@@ -58,10 +65,11 @@ export default function NewRequest() {
     }
 
     try {
-      await axios.post("/api/inventory/requests/request", {
+      await axios.post("/api/inventory/requests", {
         itemId: selectedItem._id,
         quantity,
         requestType,
+        dueDate,
       });
 
       showSuccessToast("Request submitted successfully");
@@ -74,6 +82,7 @@ export default function NewRequest() {
   return (
     <Protection>
       <Layout>
+        {loading && <LoadingScreen />}
         <div className="min-h-screen p-6 bg-gray-100">
           <div className="max-w-6xl mx-auto bg-white p-6 shadow-md rounded-lg">
             <div className="flex justify-between items-center mb-6">
@@ -97,7 +106,9 @@ export default function NewRequest() {
                       <h3 className="text-lg font-semibold text-gray-800">
                         {item.name}
                       </h3>
-                      <p className="text-gray-600">Quantity: {item.quantity}</p>
+                      <p className="text-gray-600">
+                        Available: {item.availableQuantity}
+                      </p>
                       <p className="text-gray-500">{item.description}</p>
                     </div>
                     <Button
@@ -149,6 +160,17 @@ export default function NewRequest() {
                 type="number"
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
+              />
+            </FormControl>
+            <FormControl fullWidth sx={{ mt: 2 }}>
+              <TextField
+                label="Due Date"
+                type="date"
+                value={dueDate}
+                onChange={(e) => setDueDate(e.target.value)}
+                InputLabelProps={{
+                  shrink: true,
+                }}
               />
             </FormControl>
             <Button

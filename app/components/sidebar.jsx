@@ -31,7 +31,6 @@ const Sidebar = () => {
     { name: "ተማሪዎች", path: "/students", icon: <StudentsIcon /> },
     { name: "የትምህርት ክፍላት", path: "/batches", icon: <BatchIcon /> },
     { name: "ቁሳቁሶች", path: "/items", icon: <ItemsIcon /> },
-    { name: "ወጪ ገቢ", path: "#", icon: <ExpenseIcon /> },
     { name: "ደብዳቤዎች", path: "/letter", icon: <LettersIcon /> },
     { name: "ቅጣት መዝገብ", path: "/conduct", icon: <UsersIcon /> },
     {
