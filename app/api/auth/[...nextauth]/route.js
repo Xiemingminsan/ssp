@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 import User from "../../../../models/user";
 import dbConnect from "../../../../dbConnect";
 
-const handler = NextAuth({
+export const authOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -64,6 +64,9 @@ const handler = NextAuth({
     signIn: "/auth/signin",
     error: "/auth/error", // Error code passed in query string as ?error=
   },
-});
+};
+
+// Pass authOptions to NextAuth
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

@@ -89,7 +89,7 @@ export default function NewRequest() {
               <h1 className="text-2xl font-bold text-gray-800">
                 Request Items
               </h1>
-              <Link href="/userrequest/viewrequest">
+              <Link href="/viewrequest">
                 <Button variant="contained" color="secondary">
                   View My Requests
                 </Button>

@@ -33,6 +33,7 @@ const Sidebar = () => {
     { name: "ቁሳቁሶች", path: "/items", icon: <ItemsIcon /> },
     { name: "ደብዳቤዎች", path: "/letter", icon: <LettersIcon /> },
     { name: "ቅጣት መዝገብ", path: "/conduct", icon: <UsersIcon /> },
+    { name: "ግብ", path: "/userrequest", icon: <ExpenseIcon /> },
     {
       name: "ውጣ",
       path: "/",

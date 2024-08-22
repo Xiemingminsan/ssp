@@ -1,6 +1,7 @@
 import dbConnect from "../../../../../dbConnect";
 import Request from "../../../../../models/request";
 import authenticate from "../../../../../auth";
+import item from "../../../../../models/item";
 
 export async function GET(req) {
   const authData = await authenticate(req);

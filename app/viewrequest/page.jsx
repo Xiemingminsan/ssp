@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Protection from "../../Protection";
-import Layout from "../../components/layout";
-import LoadingScreen from "../../components/LoadingScreen";
-import { showErrorToast } from "../../utils/toastUtils";
-import { showSuccessToast } from "../../utils/toastUtils";
+import Protection from "../Protection";
+import Layout from "../components/layout";
+import LoadingScreen from "../components/LoadingScreen";
+import { showErrorToast } from "../utils/toastUtils";
+import { showSuccessToast } from "../utils/toastUtils";
 
 import {
   Button,
