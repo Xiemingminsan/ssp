@@ -15,23 +15,15 @@ export async function POST(req) {
   }
 
   try {
-    const {
-      subject,
-      sender,
-      receiver,
-      dateReceived,
-      description,
-      dateSent,
-      status,
-    } = await req.json(); // Destructure fields from the request body
+    const { subject, sender, receiver, date, description, status } =
+      await req.json(); // Destructure fields from the request body
 
     const newLetter = await Letter.create({
       subject,
       sender,
       receiver,
-      dateReceived,
+      date,
       description,
-      dateSent,
       status,
     });
 
