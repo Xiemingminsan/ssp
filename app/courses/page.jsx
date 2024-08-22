@@ -84,7 +84,7 @@ export default function CourseManager() {
         for (const batchId of selectedBatches) {
           await axios.put(`/api/student/batches/${batchId}`, {
             course: courseId,
-            action: "add  ",
+            action: "add",
           });
         }
         console.log(selectedBatches);
