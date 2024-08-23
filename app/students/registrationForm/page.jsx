@@ -103,7 +103,7 @@ const StudentForm = ({ initialData, onSubmit, onCancel }) => {
       lastname: "",
       profilepicture: "",
       birthdate: "",
-      batch: "66c5aba7fb73588f244b8b17", // here i just give a batch id manually. we will create a function to retrive the id from the retrieve batch
+      batch: "66bd09de777188009c1e6451", // here i just give a batch id manually. we will create a function to
       batchname: "",
       mothername: "",
       gender: "",
