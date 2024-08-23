@@ -1,12 +1,12 @@
 import dbConnect from "../../../../dbConnect";
 import Student from "../../../../models/student";
 import Batch from "../../../../models/batch";
-import authenticate from "../../../../auth"; // Import the authenticate function
+import authenticate from "../../../../auth";
 
 export async function POST(req) {
   await dbConnect();
 
-  const authData = await authenticate(req); // Authenticate the request
+  const authData = await authenticate(req);
 
   if (!authData || authData.role !== "admin") {
     return new Response(JSON.stringify({ message: "Unauthorized" }), {
@@ -22,12 +22,11 @@ export async function POST(req) {
     profilepicture,
     birthdate,
     email,
-    courses, // Array of course IDs
-    attendance, // Array of attendance records
+    courses,
+    attendance,
   } = await req.json();
 
   try {
-    // Check if the email already exists
     const existingStudent = await Student.findOne({ email });
     const existStudent = await Student.findOne({ birthdate });
     if (existingStudent && existStudent) {
@@ -55,8 +54,8 @@ export async function POST(req) {
       profilepicture,
       birthdate,
       email,
-      courses, // Store the array of course IDs
-      attendance, // Store the array of attendance records
+      courses,
+      attendance,
     });
 
     await newStudent.save();
@@ -85,7 +84,7 @@ export async function POST(req) {
 export async function GET(req) {
   await dbConnect();
 
-  const authData = await authenticate(req); // Authenticate the request
+  const authData = await authenticate(req);
 
   if (!authData || authData.role !== "admin") {
     return new Response(JSON.stringify({ message: "Unauthorized" }), {
