@@ -16,7 +16,6 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-
 const FormWrapper = styled(Box)({
   padding: "2rem",
   maxWidth: "800px",
@@ -73,18 +72,14 @@ const StudentForm = ({ initialData, onSubmit, onCancel }) => {
         const response = await fetch("/api/student/batches");
 
         if (response.ok) {
-          const data = await response.json(); 
+          const data = await response.json();
 
-          
           console.log("Fetched data:", data);
 
-          
           if (Array.isArray(data) && data.length > 0) {
-            
             const batchNames = data.map((batch) => batch.name);
             console.log("Batch names:", batchNames);
 
-            
             setBatches(data);
           } else {
             console.warn(
@@ -108,7 +103,7 @@ const StudentForm = ({ initialData, onSubmit, onCancel }) => {
       lastname: "",
       profilepicture: "",
       birthdate: "",
-      batch: "66c5aba7fb73588f244b8b17",
+      batch: "66c5aba7fb73588f244b8b17", // here i just give a batch id manually. we will create a function to retrive the id from the retrieve batch
       batchname: "",
       mothername: "",
       gender: "",
@@ -121,7 +116,7 @@ const StudentForm = ({ initialData, onSubmit, onCancel }) => {
       highereducationstart: "",
       highereducationend: "",
       graduatedin: "",
-      registrationday: new Date().toISOString().split("T")[0], 
+      registrationday: new Date().toISOString().split("T")[0],
       city: "",
       subcity: "",
       kebele: "",
@@ -144,7 +139,6 @@ const StudentForm = ({ initialData, onSubmit, onCancel }) => {
 
   const [batchOptions, setBatchOptions] = useState([]);
 
- 
   const [batch, setBatch] = useState("");
   const [date, setDate] = useState("");
   const [batches, setBatches] = useState([]);
@@ -188,7 +182,6 @@ const StudentForm = ({ initialData, onSubmit, onCancel }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    
     const apiFormData = {
       _id: formData._id,
       firstname: formData.firstname,
@@ -227,13 +220,12 @@ const StudentForm = ({ initialData, onSubmit, onCancel }) => {
       preferredworkarea: formData.preferredworkarea,
       emergencycontactname: formData.emergencycontactname,
       emergencycontactphone: formData.emergencycontactphone,
-      courses: [], 
-      attendance: [], 
+      courses: [],
+      attendance: [],
     };
 
     try {
       if (onSubmit) {
-        
         await onSubmit(apiFormData);
       } else {
         const response = await axios.post(
@@ -404,7 +396,6 @@ const StudentForm = ({ initialData, onSubmit, onCancel }) => {
         {activeStep === 1 && (
           <FormSection>
             {
-             
               <section className="mb-6">
                 <h3>የትምህርት ደረጃ</h3>
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -532,7 +523,6 @@ const StudentForm = ({ initialData, onSubmit, onCancel }) => {
         {activeStep === 2 && (
           <FormSection>
             {
-             
               <section className="mb-6">
                 <h3>የአድራሻ መረጃ</h3>
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -621,7 +611,6 @@ const StudentForm = ({ initialData, onSubmit, onCancel }) => {
         {activeStep === 3 && (
           <FormSection>
             {
-             
               <section className="mb-6">
                 <h3>የስራ መረጃ</h3>
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -677,7 +666,6 @@ const StudentForm = ({ initialData, onSubmit, onCancel }) => {
         {activeStep === 4 && (
           <FormSection>
             {
-             
               <section className="mb-6">
                 <h3>ሌሎች</h3>
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -735,7 +723,6 @@ const StudentForm = ({ initialData, onSubmit, onCancel }) => {
         {activeStep === 5 && (
           <FormSection>
             {
-             
               <section className="mb-6">
                 <h3>አደጋ ጊዜ ተጠሪ</h3>
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
