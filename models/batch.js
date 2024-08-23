@@ -7,10 +7,6 @@ const batchSchema = new mongoose.Schema({
   endDate: { type: Date },
 });
 
-<<<<<<< Updated upstream
-// Check if the model already exists before defining it
-=======
->>>>>>> Stashed changes
 const Batch = mongoose.models.Batch || mongoose.model("Batch", batchSchema);
 
 export default Batch;

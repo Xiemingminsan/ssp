@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route"; // Adjust based on your directory structure
+import { authOptions } from "/app/api/auth/[...nextauth]/route"; // Adjust based on your directory structure
 
 export default async function authenticate(req) {
   const session = await getServerSession(authOptions);
