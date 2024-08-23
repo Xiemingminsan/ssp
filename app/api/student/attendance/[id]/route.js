@@ -2,9 +2,11 @@ import dbConnect from "../../../../../dbConnect";
 import Student from "../../../../../models/student";
 import authenticate from "../../../../../auth";
 
-export async function PUT(req, { params }) {
+// GET /api/student/attendance/[id]
+export async function GET(req, { params }) {
   await dbConnect();
 
+  // Authenticate the user
   const authData = await authenticate(req);
   if (!authData || !["admin", "teacher"].includes(authData.role)) {
     return new Response(JSON.stringify({ message: "Unauthorized" }), {
@@ -13,33 +15,23 @@ export async function PUT(req, { params }) {
     });
   }
 
-  const { id } = params;
-  const { status } = await req.json();
+  const { id } = params; // Student ID
 
   try {
-    const student = await Student.findOneAndUpdate(
-      { "attendance._id": id },
-      { $set: { "attendance.$.status": status } },
-      { new: true, runValidators: true }
-    );
+    // Find the student and populate course references in attendance
+    const student = await Student.findById(id).populate("attendance.course");
 
     if (!student) {
-      return new Response(
-        JSON.stringify({ message: "Attendance record not found" }),
-        {
-          status: 404,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      return new Response(JSON.stringify({ message: "Student not found" }), {
+        status: 404,
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
-    return new Response(
-      JSON.stringify({ message: "Attendance updated successfully" }),
-      {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+    return new Response(JSON.stringify({ attendance: student.attendance }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
   } catch (error) {
     return new Response(
       JSON.stringify({

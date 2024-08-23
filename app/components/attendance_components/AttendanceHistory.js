@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import * as XLSX from "xlsx";
 
 const AttendanceHistory = ({ historyData, onFetchHistory }) => {
   const [startDate, setStartDate] = useState("");
@@ -22,6 +23,26 @@ const AttendanceHistory = ({ historyData, onFetchHistory }) => {
       default:
         return "bg-gray-100 text-gray-800";
     }
+  };
+
+  const exportToExcel = () => {
+    const formattedData = historyData.map((student) => {
+      const attendance = {};
+      student.attendance.forEach((record) => {
+        const date = new Date(record.date).toLocaleDateString();
+        attendance[date] = record.status;
+      });
+      return {
+        Name: `${student.firstname} ${student.lastname}`,
+        ...attendance,
+      };
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Attendance History");
+
+    XLSX.writeFile(workbook, "Attendance_History.xlsx");
   };
 
   return (
@@ -73,43 +94,54 @@ const AttendanceHistory = ({ historyData, onFetchHistory }) => {
       </form>
 
       {historyData.length > 0 && (
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto text-black">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-gray-100">
                 <th className="py-4 px-6 bg-grey-lightest font-bold uppercase text-sm text-grey-dark border-b border-grey-light">
-                  Date
-                </th>
-                <th className="py-4 px-6 bg-grey-lightest font-bold uppercase text-sm text-grey-dark border-b border-grey-light">
                   Student Name
                 </th>
-                <th className="py-4 px-6 bg-grey-lightest font-bold uppercase text-sm text-grey-dark border-b border-grey-light">
-                  Status
-                </th>
+                {historyData[0].attendance.map((record) => (
+                  <th
+                    key={record.date}
+                    className="py-4 px-6 bg-grey-lightest font-bold uppercase text-sm text-grey-dark border-b border-grey-light"
+                  >
+                    {new Date(record.date).toLocaleDateString()}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>
-              {historyData.map((attendance) => (
-                <tr key={attendance._id} className="hover:bg-gray-50">
+              {historyData.map((student) => (
+                <tr key={student.studentId} className="hover:bg-gray-50">
                   <td className="py-4 px-6 border-b border-grey-light">
-                    {new Date(attendance.date).toLocaleDateString()}
+                    {`${student.firstname} ${student.lastname}`}
                   </td>
-                  <td className="py-4 px-6 border-b border-grey-light">
-                    {`${attendance.studentId.firstName} ${attendance.studentId.middleName}`}
-                  </td>
-                  <td className="py-4 px-6 border-b border-grey-light">
-                    <span
-                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(
-                        attendance.status
-                      )}`}
+                  {student.attendance.map((record) => (
+                    <td
+                      key={record._id}
+                      className="py-4 px-6 border-b border-grey-light"
                     >
-                      {attendance.status}
-                    </span>
-                  </td>
+                      <span
+                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(
+                          record.status
+                        )}`}
+                      >
+                        {record.status}
+                      </span>
+                    </td>
+                  ))}
                 </tr>
               ))}
             </tbody>
           </table>
+
+          <button
+            onClick={exportToExcel}
+            className="m-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          >
+            Export to Excel
+          </button>
         </div>
       )}
     </div>

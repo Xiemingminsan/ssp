@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+"use client"; // Ensure this file is treated as a client component in Next.js
+
+import { useState, useEffect } from "react";
 
 const AttendanceForm = ({
   students,
@@ -10,11 +12,47 @@ const AttendanceForm = ({
 }) => {
   const [batch, setBatch] = useState("");
   const [date, setDate] = useState("");
+  const [batches, setBatches] = useState([]);
 
   const handleFetchStudents = (e) => {
     e.preventDefault();
     onFetchStudents(batch, date);
   };
+
+  useEffect(() => {
+    const fetchBatches = async () => {
+      try {
+        const response = await fetch("/api/student/batches");
+
+        if (response.ok) {
+          const data = await response.json(); // Parse the response as JSON
+
+          // Debugging: Log the entire data object to ensure it is received correctly
+          console.log("Fetched data:", data);
+
+          // Check if data is an array and has items
+          if (Array.isArray(data) && data.length > 0) {
+            // Extract batch names and log them
+            const batchNames = data.map((batch) => batch.name);
+            console.log("Batch names:", batchNames);
+
+            // Set the fetched data to state
+            setBatches(data);
+          } else {
+            console.warn(
+              "No batches found or data is not in the expected format"
+            );
+          }
+        } else {
+          console.error("Failed to fetch batches, status:", response.status);
+        }
+      } catch (error) {
+        console.error("Error fetching batches:", error);
+      }
+    };
+
+    fetchBatches();
+  }, []);
 
   const handleAttendanceChange = (index, status) => {
     const newAttendances = [...attendances];
@@ -54,15 +92,22 @@ const AttendanceForm = ({
             >
               Batch
             </label>
-            <input
-              className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+            <select
               id="batch"
-              type="text"
+              className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
               value={batch}
               onChange={(e) => setBatch(e.target.value)}
-              placeholder="Enter batch name"
               required
-            />
+            >
+              <option value="" disabled>
+                Select batch
+              </option>
+              {batches.map((batch) => (
+                <option key={batch._id} value={batch.name}>
+                  {batch.name}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
         <button
@@ -78,7 +123,7 @@ const AttendanceForm = ({
       )}
 
       {students.length > 0 && (
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto text-black">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-gray-100">
@@ -102,7 +147,7 @@ const AttendanceForm = ({
             <tbody>
               {students.map((student, index) => (
                 <tr key={student._id} className="hover:bg-gray-50">
-                  <td className="py-4 px-6 border-b border-grey-light">{`${student.firstName} ${student.middleName}`}</td>
+                  <td className="py-4 px-6 border-b border-grey-light">{`${student.firstname} ${student.middlename}`}</td>
                   <td className="py-4 px-6 border-b border-grey-light">
                     <button
                       onClick={() => handleAttendanceChange(index, "Present")}

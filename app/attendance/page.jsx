@@ -1,10 +1,18 @@
+<<<<<<< Updated upstream
 "use client";
+=======
+"use client"; // Required for using hooks and client-side logic
+>>>>>>> Stashed changes
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import AttendanceForm from "../components/attendance_components/AttendanceForm";
 import AttendanceHistory from "../components/attendance_components/AttendanceHistory";
+<<<<<<< Updated upstream
 import Protection from "../Protection";
+=======
+import Protection from "../Protection"; // Import the Protection component
+>>>>>>> Stashed changes
 import Layout from "../components/layout";
 import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
 
@@ -32,7 +40,11 @@ export default function AttendanceManager() {
           studentId: student._id,
           date: date,
           status: "",
+<<<<<<< Updated upstream
           courseId: "66b106cd29f98734ace49374",
+=======
+          courseId: "66b106cd29f98734ace49374", // Update this accordingly
+>>>>>>> Stashed changes
         }))
       );
       showSuccessToast("Students fetched successfully");
@@ -67,6 +79,10 @@ export default function AttendanceManager() {
         params: { startDate, endDate },
       });
 
+<<<<<<< Updated upstream
+=======
+      // Extract the attendanceHistory array from the response data
+>>>>>>> Stashed changes
       const history = response.data.attendanceHistory || [];
 
       console.log("Attendance History:", history);

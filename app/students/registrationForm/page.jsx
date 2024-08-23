@@ -16,6 +16,10 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
+<<<<<<< Updated upstream
+=======
+// Custom styled components
+>>>>>>> Stashed changes
 const FormWrapper = styled(Box)({
   padding: "2rem",
   maxWidth: "800px",
@@ -72,6 +76,7 @@ const StudentForm = ({ initialData, onSubmit, onCancel }) => {
         const response = await fetch("/api/student/batches");
 
         if (response.ok) {
+<<<<<<< Updated upstream
           const data = await response.json();
 
           console.log("Fetched data:", data);
@@ -80,6 +85,20 @@ const StudentForm = ({ initialData, onSubmit, onCancel }) => {
             const batchNames = data.map((batch) => batch.name);
             console.log("Batch names:", batchNames);
 
+=======
+          const data = await response.json(); // Parse the response as JSON
+
+          // Debugging: Log the entire data object to ensure it is received correctly
+          console.log("Fetched data:", data);
+
+          // Check if data is an array and has items
+          if (Array.isArray(data) && data.length > 0) {
+            // Extract batch names and log them
+            const batchNames = data.map((batch) => batch.name);
+            console.log("Batch names:", batchNames);
+
+            // Set the fetched data to state
+>>>>>>> Stashed changes
             setBatches(data);
           } else {
             console.warn(
@@ -116,7 +135,11 @@ const StudentForm = ({ initialData, onSubmit, onCancel }) => {
       highereducationstart: "",
       highereducationend: "",
       graduatedin: "",
+<<<<<<< Updated upstream
       registrationday: new Date().toISOString().split("T")[0],
+=======
+      registrationday: new Date().toISOString().split("T")[0], // Set to current date by default
+>>>>>>> Stashed changes
       city: "",
       subcity: "",
       kebele: "",
@@ -139,6 +162,16 @@ const StudentForm = ({ initialData, onSubmit, onCancel }) => {
 
   const [batchOptions, setBatchOptions] = useState([]);
 
+<<<<<<< Updated upstream
+=======
+  /*   useEffect(() => {
+    setBatchOptions([
+      { batchName: "Batch 1" },
+      { batchName: "Batch 1" },
+      { batchName: "Batch 1" },
+    ]);
+  }, []); */
+>>>>>>> Stashed changes
   const [batch, setBatch] = useState("");
   const [date, setDate] = useState("");
   const [batches, setBatches] = useState([]);
@@ -182,6 +215,10 @@ const StudentForm = ({ initialData, onSubmit, onCancel }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+<<<<<<< Updated upstream
+=======
+    // Convert camelCase to snake_case and add missing fields
+>>>>>>> Stashed changes
     const apiFormData = {
       _id: formData._id,
       firstname: formData.firstname,
@@ -220,12 +257,21 @@ const StudentForm = ({ initialData, onSubmit, onCancel }) => {
       preferredworkarea: formData.preferredworkarea,
       emergencycontactname: formData.emergencycontactname,
       emergencycontactphone: formData.emergencycontactphone,
+<<<<<<< Updated upstream
       courses: [],
       attendance: [],
+=======
+      courses: [], // Add empty array for courses
+      attendance: [], // Add empty array for attendance
+>>>>>>> Stashed changes
     };
 
     try {
       if (onSubmit) {
+<<<<<<< Updated upstream
+=======
+        // If onSubmit prop is provided, use it (for editing)
+>>>>>>> Stashed changes
         await onSubmit(apiFormData);
       } else {
         const response = await axios.post(
@@ -396,6 +442,10 @@ const StudentForm = ({ initialData, onSubmit, onCancel }) => {
         {activeStep === 1 && (
           <FormSection>
             {
+<<<<<<< Updated upstream
+=======
+              /* Educational Information Section */
+>>>>>>> Stashed changes
               <section className="mb-6">
                 <h3>የትምህርት ደረጃ</h3>
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -523,6 +573,10 @@ const StudentForm = ({ initialData, onSubmit, onCancel }) => {
         {activeStep === 2 && (
           <FormSection>
             {
+<<<<<<< Updated upstream
+=======
+              /* Address Information Section */
+>>>>>>> Stashed changes
               <section className="mb-6">
                 <h3>የአድራሻ መረጃ</h3>
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -611,6 +665,10 @@ const StudentForm = ({ initialData, onSubmit, onCancel }) => {
         {activeStep === 3 && (
           <FormSection>
             {
+<<<<<<< Updated upstream
+=======
+              /* Employment Information Section */
+>>>>>>> Stashed changes
               <section className="mb-6">
                 <h3>የስራ መረጃ</h3>
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -666,6 +724,10 @@ const StudentForm = ({ initialData, onSubmit, onCancel }) => {
         {activeStep === 4 && (
           <FormSection>
             {
+<<<<<<< Updated upstream
+=======
+              /* Personal Details Section */
+>>>>>>> Stashed changes
               <section className="mb-6">
                 <h3>ሌሎች</h3>
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -723,6 +785,10 @@ const StudentForm = ({ initialData, onSubmit, onCancel }) => {
         {activeStep === 5 && (
           <FormSection>
             {
+<<<<<<< Updated upstream
+=======
+              /* Emergency Contact Section */
+>>>>>>> Stashed changes
               <section className="mb-6">
                 <h3>አደጋ ጊዜ ተጠሪ</h3>
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
