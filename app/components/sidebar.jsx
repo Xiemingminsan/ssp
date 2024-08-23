@@ -27,7 +27,11 @@ const Sidebar = () => {
     { name: "ዋና", path: "/homepage", icon: <HomeIcon /> },
     { name: "ኮርሶች", path: "/courses", icon: <SchoolIcon /> },
     { name: "አቴንዳንስ", path: "/attendance", icon: <AttendanceIcon /> },
+<<<<<<< Updated upstream
     { name: "አመራሮች", path: "/hierarachy", icon: <ManagementIcon /> },
+=======
+    { name: "አመራሮች", path: "/management", icon: <ManagementIcon /> },
+>>>>>>> Stashed changes
     { name: "ተማሪዎች", path: "/students", icon: <StudentsIcon /> },
     { name: "የትምህርት ክፍላት", path: "/batches", icon: <BatchIcon /> },
     { name: "ቁሳቁሶች", path: "/items", icon: <ItemsIcon /> },
