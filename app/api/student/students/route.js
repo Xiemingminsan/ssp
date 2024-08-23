@@ -2,11 +2,10 @@ import dbConnect from "../../../../dbConnect";
 import Student from "../../../../models/student";
 import Batch from "../../../../models/batch";
 import authenticate from "../../../../auth";
-<<<<<<< Updated upstream
-=======
+
 import fs from "fs";
 import path from "path";
->>>>>>> Stashed changes
+
 
 export async function POST(req) {
   await dbConnect();
@@ -46,10 +45,6 @@ export async function POST(req) {
     phone,
     postalnumber,
     email,
-<<<<<<< Updated upstream
-    courses,
-    attendance,
-=======
     employmenttype,
     companyname,
     companyaddress,
@@ -62,7 +57,7 @@ export async function POST(req) {
     emergencycontactphone,
     courses, // Array of course IDs
     attendance, // Array of attendance records
->>>>>>> Stashed changes
+
   } = await req.json();
 
   // Handle the profile picture upload
@@ -132,10 +127,8 @@ export async function POST(req) {
       phone,
       postalnumber,
       email,
-<<<<<<< Updated upstream
-      courses,
-      attendance,
-=======
+
+
       employmenttype,
       companyname,
       companyaddress,
@@ -148,7 +141,7 @@ export async function POST(req) {
       emergencycontactphone,
       courses, // Array of course IDs
       attendance, // Array of attendance records
->>>>>>> Stashed changes
+
     });
 
     console.log(newStudent);
