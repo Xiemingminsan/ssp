@@ -6,7 +6,6 @@ import authenticate from "../../../../auth";
 import fs from "fs";
 import path from "path";
 
-
 export async function POST(req) {
   await dbConnect();
 
@@ -57,7 +56,6 @@ export async function POST(req) {
     emergencycontactphone,
     courses, // Array of course IDs
     attendance, // Array of attendance records
-
   } = await req.json();
 
   // Handle the profile picture upload
@@ -128,7 +126,6 @@ export async function POST(req) {
       postalnumber,
       email,
 
-
       employmenttype,
       companyname,
       companyaddress,
@@ -141,7 +138,6 @@ export async function POST(req) {
       emergencycontactphone,
       courses, // Array of course IDs
       attendance, // Array of attendance records
-
     });
 
     console.log(newStudent);

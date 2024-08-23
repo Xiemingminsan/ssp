@@ -22,33 +22,46 @@ export async function POST(req) {
         });
       }
 
-      // Check if the attendance for the given date already exists
+      // Check if an attendance record already exists for the same date, course, and student
       const existingAttendance = student.attendance.find(
         (att) =>
-          att.date.toISOString() === attendanceDate.toISOString() &&
-          att.course.toString() === course
+          att.date.toISOString().split("T")[0] ===
+            attendanceDate.toISOString().split("T")[0] &&
+          att.course.toString() === course.toString()
       );
 
       if (existingAttendance) {
-        // Update existing attendance
-        existingAttendance.status = status;
-      } else {
-        // Add new attendance record
-        student.attendance.push({ date: attendanceDate, status, course });
+        // Return an error if the record already exists
+        return new Response(
+          JSON.stringify({
+            message:
+              "Attendance for this course on this date already exists for this student",
+          }),
+          {
+            status: 400,
+            headers: { "Content-Type": "application/json" },
+          }
+        );
       }
+
+      // Add new attendance record
+      student.attendance.push({ date: attendanceDate, status, course });
 
       // Save the student record with updated attendance
       await student.save();
     }
 
     return new Response(
-      JSON.stringify({ message: "Attendance updated successfully" }),
+      JSON.stringify({ message: "Attendance marked successfully" }),
       { status: 200, headers: { "Content-Type": "application/json" } }
     );
   } catch (error) {
-    return new Response(JSON.stringify({ message: error.message }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    return new Response(
+      JSON.stringify({
+        message: "Internal Server Error",
+        error: error.message,
+      }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
   }
 }

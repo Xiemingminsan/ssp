@@ -103,7 +103,7 @@ const StudentForm = ({ initialData, onSubmit, onCancel }) => {
       lastname: "",
       profilepicture: "",
       birthdate: "",
-      batch: "66c5aba7fb73588f244b8b17", // here i just give a batch id manually. we will create a function to retrive the id from the retrieve batch
+      batch: "66bd0980777188009c1e644b", // here i just give a batch id manually. we will create a function to retrive the id from the retrieve batch
       batchname: "",
       mothername: "",
       gender: "",
@@ -161,24 +161,29 @@ const StudentForm = ({ initialData, onSubmit, onCancel }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
 
     if (name === "batchname") {
-      setBatch(value);
-      console.log("Batch updated to:", value);
+      const selectedBatch = batches.find((batch) => batch.name === value);
+      setFormData((prevData) => ({
+        ...prevData,
+        batch: selectedBatch ? selectedBatch._id : "", // Set the corresponding batch ID
+        batchname: value, // Set the selected batch name
+      }));
+      console.log("Selected Batch:", selectedBatch);
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
     }
   };
 
   const handleFileChange = (e) => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      profilePicture: e.target.files[0],
+    setFormData((prevData) => ({
+      ...prevData,
+      profilepicture: e.target.files[0],
     }));
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -324,6 +329,7 @@ const StudentForm = ({ initialData, onSubmit, onCancel }) => {
                   id="profilepicture"
                   name="profilepicture"
                   onChange={handleFileChange}
+                  accept="image/*"
                 />
               </div>
               <div>
@@ -361,7 +367,6 @@ const StudentForm = ({ initialData, onSubmit, onCancel }) => {
                   ))}
                 </FormSelect>
               </div>
-
               <div>
                 <label htmlFor="mothername" className="block mb-2">
                   Mother Name:

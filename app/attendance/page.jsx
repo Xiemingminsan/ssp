@@ -15,15 +15,17 @@ export default function AttendanceManager() {
   const [attendances, setAttendances] = useState([]);
   const [historyData, setHistoryData] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isAttendanceFormVisible, setAttendanceFormVisible] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     console.log("Updated history data:", historyData);
   }, [historyData]);
 
-  const handleFetchStudents = async (batch, date) => {
+  const handleFetchStudents = async (batch, date, course) => {
     try {
       const response = await axios.get(`/api/student/attendance/batch`, {
-        params: { batchName: batch },
+        params: { batchName: batch, courseId: course, date: date },
       });
 
       const data = response.data;
@@ -34,7 +36,7 @@ export default function AttendanceManager() {
           studentId: student._id,
           date: date,
           status: "",
-          courseId: "66b106cd29f98734ace49374",
+          courseId: course, // Use the selected course ID
         }))
       );
       showSuccessToast("Students fetched successfully");
@@ -44,8 +46,15 @@ export default function AttendanceManager() {
     }
   };
 
+  const resetForm = () => {
+    setStudents([]);
+    setAttendances([]);
+    setErrorMessage("");
+    setAttendanceFormVisible(true);
+  };
+
   const handleSaveAttendance = async (attendancesData) => {
-    console.log(attendancesData);
+    console.log("pleaseeeeeee", attendancesData);
     try {
       await axios.post(`/api/student/attendance/saveAttendance`, {
         attendances: attendancesData,
@@ -53,7 +62,11 @@ export default function AttendanceManager() {
 
       showSuccessToast("Attendance saved successfully");
       setErrorMessage("");
+      setAttendanceFormVisible(false); // Close the form/modal on success
+      resetForm(); // Reset the form after saving attendance
     } catch (error) {
+      setAttendanceFormVisible(false); // Close the form/modal on success
+      resetForm(); // Reset the form after saving attendance
       console.error("Error saving attendance:", error);
       setErrorMessage(
         error.response?.data?.message ||
@@ -63,10 +76,10 @@ export default function AttendanceManager() {
     }
   };
 
-  const handleFetchHistory = async (startDate, endDate) => {
+  const handleFetchHistory = async (startDate, endDate, course) => {
     try {
       const response = await axios.get("/api/student/attendance/history", {
-        params: { startDate, endDate },
+        params: { startDate, endDate, courseId: course },
       });
 
       const history = response.data.attendanceHistory || [];
@@ -88,14 +101,16 @@ export default function AttendanceManager() {
             <h1 className="text-2xl font-bold mb-6 text-black text-center">
               Attendance Management
             </h1>
-            <AttendanceForm
-              students={students}
-              attendances={attendances}
-              setAttendances={setAttendances}
-              onFetchStudents={handleFetchStudents}
-              onSaveAttendance={handleSaveAttendance}
-              errorMessage={errorMessage}
-            />
+            {isAttendanceFormVisible && (
+              <AttendanceForm
+                students={students}
+                attendances={attendances}
+                setAttendances={setAttendances}
+                onFetchStudents={handleFetchStudents}
+                onSaveAttendance={handleSaveAttendance}
+                errorMessage={errorMessage}
+              />
+            )}
             <AttendanceHistory
               historyData={historyData}
               onFetchHistory={handleFetchHistory}

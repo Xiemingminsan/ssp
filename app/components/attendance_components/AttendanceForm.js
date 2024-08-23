@@ -1,4 +1,4 @@
-"use client"; // Ensure this file is treated as a client component in Next.js
+"use client";
 
 import { useState, useEffect } from "react";
 
@@ -12,37 +12,24 @@ const AttendanceForm = ({
 }) => {
   const [batch, setBatch] = useState("");
   const [date, setDate] = useState("");
+  const [course, setCourse] = useState(""); // New state for selected course
   const [batches, setBatches] = useState([]);
+  const [courses, setCourses] = useState([]); // New state for courses
 
-  const handleFetchStudents = (e) => {
-    e.preventDefault();
-    onFetchStudents(batch, date);
+  const handleBatchChange = (e) => {
+    const selectedValue = e.target.value;
+    const [batchId, batchName] = selectedValue.split("|");
+    setBatch({ id: batchId, name: batchName });
   };
-
   useEffect(() => {
+    // Fetch batches when component mounts
     const fetchBatches = async () => {
       try {
         const response = await fetch("/api/student/batches");
-
         if (response.ok) {
-          const data = await response.json(); // Parse the response as JSON
-
-          // Debugging: Log the entire data object to ensure it is received correctly
-          console.log("Fetched data:", data);
-
-          // Check if data is an array and has items
-          if (Array.isArray(data) && data.length > 0) {
-            // Extract batch names and log them
-            const batchNames = data.map((batch) => batch.name);
-            console.log("Batch names:", batchNames);
-
-            // Set the fetched data to state
-            setBatches(data);
-          } else {
-            console.warn(
-              "No batches found or data is not in the expected format"
-            );
-          }
+          const data = await response.json();
+          setBatches(data);
+          console.log(data);
         } else {
           console.error("Failed to fetch batches, status:", response.status);
         }
@@ -54,6 +41,39 @@ const AttendanceForm = ({
     fetchBatches();
   }, []);
 
+  useEffect(() => {
+    // Fetch courses whenever a batch is selected
+    const fetchCourses = async () => {
+      if (batch) {
+        try {
+          const response = await fetch(
+            `/api/student/batches/courses/${batch.id}`
+          );
+          if (response.ok) {
+            const data = await response.json();
+            console.log(data); // To inspect the data structure in the frontend
+            if (data && data.courses) {
+              setCourses(data.courses);
+            } else {
+              console.error("Courses not found in the response");
+            }
+          } else {
+            console.error("Failed to fetch courses, status:", response.status);
+          }
+        } catch (error) {
+          console.error("Error fetching courses:", error);
+        }
+      }
+    };
+
+    fetchCourses();
+  }, [batch]);
+
+  const handleFetchStudents = (e) => {
+    e.preventDefault();
+    onFetchStudents(batch.name, date, course); // Pass course along with batch and date
+  };
+
   const handleAttendanceChange = (index, status) => {
     const newAttendances = [...attendances];
     newAttendances[index].status = status;
@@ -61,7 +81,13 @@ const AttendanceForm = ({
   };
 
   const handleSaveAttendance = () => {
-    onSaveAttendance(attendances);
+    // Ensure the course is included in each attendance record
+    const updatedAttendances = attendances.map((attendance) => ({
+      ...attendance,
+      course: course, // Rename courseId to course to match backend expectations
+    }));
+
+    onSaveAttendance(updatedAttendances);
   };
 
   return (
@@ -69,7 +95,7 @@ const AttendanceForm = ({
       <h2 className="text-2xl font-bold mb-6 text-gray-800">Take Attendance</h2>
       <form onSubmit={handleFetchStudents} className="mb-8">
         <div className="flex flex-wrap -mx-3 mb-6">
-          <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+          <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
             <label
               className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
               htmlFor="date"
@@ -85,7 +111,7 @@ const AttendanceForm = ({
               required
             />
           </div>
-          <div className="w-full md:w-1/2 px-3">
+          <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
             <label
               className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
               htmlFor="batch"
@@ -95,18 +121,44 @@ const AttendanceForm = ({
             <select
               id="batch"
               className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-              value={batch}
-              onChange={(e) => setBatch(e.target.value)}
+              value={`${batch.id}|${batch.name}`}
+              onChange={handleBatchChange} // Use the new handler
               required
             >
               <option value="" disabled>
-                Select batch
+                Select Batch
               </option>
               {batches.map((batch) => (
-                <option key={batch._id} value={batch.name}>
+                <option key={batch._id} value={`${batch._id}|${batch.name}`}>
                   {batch.name}
                 </option>
               ))}
+            </select>
+          </div>
+          <div className="w-full md:w-1/3 px-3">
+            <label
+              className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+              htmlFor="course"
+            >
+              Course
+            </label>
+            <select
+              id="course"
+              className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+              value={course}
+              onChange={(e) => setCourse(e.target.value)}
+              required
+            >
+              <option value="" disabled>
+                Select Course
+              </option>
+              {courses &&
+                Array.isArray(courses) &&
+                courses.map((course) => (
+                  <option key={course._id} value={course._id}>
+                    {course.name}
+                  </option>
+                ))}
             </select>
           </div>
         </div>
@@ -117,11 +169,9 @@ const AttendanceForm = ({
           Fetch Students
         </button>
       </form>
-
       {errorMessage && (
         <div className="mb-4 text-red-500 font-bold">{errorMessage}</div>
       )}
-
       {students.length > 0 && (
         <div className="overflow-x-auto text-black">
           <table className="w-full text-left border-collapse">
@@ -192,19 +242,18 @@ const AttendanceForm = ({
                       className={`w-8 h-8 rounded-full focus:outline-none ${
                         attendances[index].status === "Permission"
                           ? "bg-blue-500 text-white"
-                          : "bg-gray-200 text-gray-600 hover:bg-blue-200"
+                          : "bg -gray-200 text-gray-600 hover"
                       }`}
                     >
                       {attendances[index].status === "Permission" ? "⚲" : "-"}
                     </button>
-                  </td>
+                  </td>{" "}
                 </tr>
               ))}
-            </tbody>
-          </table>
+            </tbody>{" "}
+          </table>{" "}
         </div>
-      )}
-
+      )}{" "}
       {students.length > 0 && (
         <div className="mt-6">
           <button

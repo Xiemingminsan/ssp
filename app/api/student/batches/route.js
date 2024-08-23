@@ -1,6 +1,7 @@
 import dbConnect from "../../../../dbConnect";
 import Batch from "../../../../models/batch";
 import authenticate from "../../../../auth";
+import Course from "../../../../models/course";
 
 export async function POST(req) {
   await dbConnect();
