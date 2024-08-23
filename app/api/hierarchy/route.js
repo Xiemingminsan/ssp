@@ -2,12 +2,6 @@ import dbConnect from "../../../dbConnect";
 import Hierarchy from "../../../models/management";
 import authenticate from "../../../auth";
 
-export const config = {
-  api: {
-    bodyParser: true, // Enable the built-in body parser
-  },
-};
-
 export async function POST(req) {
   await dbConnect();
 
