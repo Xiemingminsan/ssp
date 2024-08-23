@@ -1,6 +1,4 @@
-
 "use client";
-// Required for using hooks and client-side logic
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
@@ -37,7 +35,6 @@ export default function AttendanceManager() {
           date: date,
           status: "",
           courseId: "66b106cd29f98734ace49374",
-
         }))
       );
       showSuccessToast("Students fetched successfully");

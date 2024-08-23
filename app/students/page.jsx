@@ -25,7 +25,7 @@ import {
 } from "@mui/material";
 import { School, People } from "@mui/icons-material";
 import { useRouter } from "next/navigation";
-import StudentForm from "../students/registrationForm/page"; // Import the StudentForm component
+import StudentForm from "../students/registrationForm/page";
 import { showErrorToast, showSuccessToast } from "../utils/toastUtils";
 
 const RECORDS_PER_PAGE = 8;
@@ -222,9 +222,9 @@ const StudentListPage = () => {
                 <Search sx />
               </InputAdornment>
             ),
-            sx: { height: "36px" }, // Decrease the height of the search box
+            sx: { height: "36px" },
           }}
-          sx={{ width: "250px", bgcolor: "#fff" }} // Decrease the width of the search box
+          sx={{ width: "250px", bgcolor: "#fff" }}
         />
 
         <Button
@@ -375,7 +375,7 @@ const StudentListPage = () => {
       <Modal
         open={isModalOpen}
         onClose={handleCloseModal}
-        aria-labelledby="edit-student-modal-title" // Reference the title here
+        aria-labelledby="edit-student-modal-title"
         aria-describedby="modal-to-edit-student-information"
       >
         <Box
@@ -395,7 +395,7 @@ const StudentListPage = () => {
           }}
         >
           <Typography
-            id="edit-student-modal-title" // Set the id here to match aria-labelledby
+            id="edit-student-modal-title"
             variant="h6"
             component="h2"
             gutterBottom
