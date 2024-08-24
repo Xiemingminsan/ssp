@@ -26,6 +26,7 @@ export async function POST(req) {
     batch,
     batchname,
     mothername,
+    profilepicture,
     gender,
     christianname,
     previoussundayschool,
@@ -57,25 +58,6 @@ export async function POST(req) {
     courses, // Array of course IDs
     attendance, // Array of attendance records
   } = await req.json();
-
-  // Handle the profile picture upload
-  let profilePicturePath = null;
-  const profilepicture = req.files?.profilepicture;
-  console.log("profilePicturePath" + " " + profilepicture);
-  if (profilepicture) {
-    console.log("profilePicture is found");
-    const uploadDir = path.join(process.cwd(), "public", "Profile_Img");
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-    const fileName = `${firstname}-${lastname}-${Date.now()}.${profilepicture.name
-      .split(".")
-      .pop()}`;
-    const filePath = path.join(uploadDir, fileName);
-    await profilepicture.mv(filePath);
-    profilePicturePath = `../../../public/Profile_Img/${fileName}`;
-  }
-
   try {
     const existingStudent = await Student.findOne({ email });
     const existingStudentBirthdate = await Student.findOne({ birthdate });
@@ -102,7 +84,7 @@ export async function POST(req) {
       firstname,
       middlename,
       lastname,
-      profilepicture: profilePicturePath,
+      profilepicture,
       birthdate,
       batch,
       batchname,
@@ -125,7 +107,6 @@ export async function POST(req) {
       phone,
       postalnumber,
       email,
-
       employmenttype,
       companyname,
       companyaddress,
