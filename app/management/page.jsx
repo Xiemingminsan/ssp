@@ -2,21 +2,58 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import CreateHierarchy from "../components/management_components/CreateHierarchy";
-import Layout from "../components/layout";
+import { useRouter } from "next/navigation";
 import Protection from "../Protection";
+import Layout from "../components/layout";
+import LoadingScreen from "../components/LoadingScreen";
+import Image from "next/image";
 
 const HierarchyTable = ({ isAdmin }) => {
   const [hierarchies, setHierarchies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editData, setEditData] = useState(null);
+
+  const router = useRouter();
 
   const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setEditData(null);
+  };
+
+  const handleEditClick = (item) => {
+    setEditData(item);
+    openModal();
+  };
+
+  const handleInactiveClick = async (id) => {
+    try {
+      const formData = new FormData();
+      formData.append("isActive", "false");
+
+      const response = await fetch(`/api/hierarchy/${id}`, {
+        method: "PUT",
+        body: formData,
+      });
+
+      if (response.ok) {
+        setHierarchies((prev) =>
+          prev.map((hierarchy) =>
+            hierarchy._id === id ? { ...hierarchy, isActive: false } : hierarchy
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Failed to set inactive:", error);
+    }
+  };
 
   useEffect(() => {
     const fetchHierarchies = async () => {
       try {
-        const response = await fetch("/api/hierarchy"); // Adjust the path as needed
+        setLoading(true);
+        const response = await fetch("/api/hierarchy");
         const data = await response.json();
         setHierarchies(data);
       } catch (error) {
@@ -32,6 +69,7 @@ const HierarchyTable = ({ isAdmin }) => {
   return (
     <Protection>
       <Layout>
+        {loading && <LoadingScreen />}
         <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
           <div className="bg-white rounded-lg shadow-lg p-8 max-w-4xl mx-auto">
             <div className="flex justify-between items-center mb-4">
@@ -46,7 +84,7 @@ const HierarchyTable = ({ isAdmin }) => {
               <h2 className="text-gray-800 text-lg font-semibold">
                 በስራ ላይ ያሉ አመራሮች
               </h2>
-              <Link href="/hierarchy/oldManagement">
+              <Link href="/management/inactiveManagements">
                 <div className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                   የቀድሞ አመራሮች
                 </div>
@@ -80,17 +118,22 @@ const HierarchyTable = ({ isAdmin }) => {
                     (item) =>
                       item.isActive && (
                         <tr key={item._id}>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            {item.photo ? (
-                              <img
-                                src={`/Profile_Img/${item.photo}`}
-                                alt="photo"
-                                className="photo h-10 w-10 rounded-full"
-                              />
-                            ) : (
-                              <span>No Picture</span>
-                            )}
-                          </td>
+                          {
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              {" "}
+                              {item.photo ? (
+                                <Image
+                                  src={`/Profile_Img/${item.photo}`}
+                                  alt="photo"
+                                  width={40}
+                                  height={40}
+                                  className="rounded-full"
+                                />
+                              ) : (
+                                <span>No Picture</span>
+                              )}
+                            </td>
+                          }
                           <td className="px-6 py-4 whitespace-nowrap">
                             {item.name}
                           </td>
@@ -102,16 +145,18 @@ const HierarchyTable = ({ isAdmin }) => {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="flex space-x-2">
-                              <Link href={`/hierarchy/edit/${item._id}`}>
-                                <div className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center">
-                                  <i className="fas fa-edit mr-1"></i> Edit
-                                </div>
-                              </Link>
-                              <Link href={`/hierarchy/inactive/${item._id}`}>
-                                <div className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded flex items-center">
-                                  <i className="fas fa-trash mr-1"></i> Inactive
-                                </div>
-                              </Link>
+                              <button
+                                onClick={() => handleEditClick(item)}
+                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center"
+                              >
+                                <i className="fas fa-edit mr-1"></i> Edit
+                              </button>
+                              <button
+                                onClick={() => handleInactiveClick(item._id)}
+                                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded flex items-center"
+                              >
+                                <i className="fas fa-trash mr-1"></i> Inactive
+                              </button>
                             </div>
                           </td>
                         </tr>
@@ -146,7 +191,7 @@ const HierarchyTable = ({ isAdmin }) => {
                       />
                     </svg>
                   </button>
-                  <CreateHierarchy onClose={closeModal} />
+                  <CreateHierarchy onClose={closeModal} editData={editData} />
                 </div>
               </div>
             )}

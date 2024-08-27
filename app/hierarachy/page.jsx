@@ -1,9 +1,7 @@
-"use client"; // Use this to allow client-side hooks and scripts in Next.js 13+
-
+"use client";
 import { useEffect } from "react";
-import Layout from "../components/layout";
 
-export default function Home() {
+const OrganizationalChart = () => {
   useEffect(() => {
     fetch("/api/hierarchy")
       .then((response) => response.json())
@@ -15,16 +13,19 @@ export default function Home() {
 
     data.forEach((person) => {
       if (person.isActive) {
-        // Check if the person is active
         departmentDivs.forEach((departmentDiv) => {
-          const roleTitle = departmentDiv.querySelector("h2").innerText.trim();
+          const roleTitleElement = departmentDiv.querySelector("h2");
+          if (!roleTitleElement) return;
 
+          const roleTitle = roleTitleElement.innerText.trim();
           if (person.role === roleTitle) {
             if (person.description === "ሰብሳቢ") {
-              departmentDiv.querySelector(".name").innerText = person.name;
+              departmentDiv.querySelector(".name").innerText =
+                person.name || "";
               departmentDiv.querySelector(".description").innerText =
-                person.description;
-              departmentDiv.querySelector(".phone").innerText = person.phone;
+                person.description || "";
+              departmentDiv.querySelector(".phone").innerText =
+                person.phone || "";
             } else {
               const subordinatesContainer =
                 departmentDiv.querySelector(".subordinates");
@@ -36,9 +37,9 @@ export default function Home() {
                   document.createElement("div");
                 subCard.classList.add("card", "sub-card", "vice-ceo-card");
                 subCard.innerHTML = `
-                  <h4 class="font-semibold text-black">${person.name}</h4>
-                  <p class="text-black">${person.description}</p>
-                  <p class="text-black">${person.phone}</p>
+                  <h4 class="font-semibold">${person.name}</h4>
+                  <p>${person.description}</p>
+                  <p>${person.phone}</p>
                 `;
                 if (!subordinatesContainer.querySelector(".vice-ceo-card")) {
                   subordinatesContainer.insertBefore(
@@ -52,9 +53,9 @@ export default function Home() {
                   document.createElement("div");
                 subCard.classList.add("card", "sub-card", "secretary-card");
                 subCard.innerHTML = `
-                  <h4 class="font-semibold text-black">${person.name}</h4>
-                  <p class="text-black">${person.description}</p>
-                  <p class="text-black">${person.phone}</p>
+                  <h4 class="font-semibold">${person.name}</h4>
+                  <p>${person.description}</p>
+                  <p>${person.phone}</p>
                 `;
                 if (!subordinatesContainer.querySelector(".secretary-card")) {
                   if (subordinatesContainer.childNodes.length >= 1) {
@@ -70,9 +71,9 @@ export default function Home() {
                 subCard = document.createElement("div");
                 subCard.classList.add("card", "sub-card");
                 subCard.innerHTML = `
-                  <h4 class="font-semibold text-black">${person.name}</h4>
-                  <p class="text-black">${person.description}</p>
-                  <p class="text-black">${person.phone}</p>
+                  <h4 class="font-semibold">${person.name}</h4>
+                  <p>${person.description}</p>
+                  <p>${person.phone}</p>
                 `;
                 subordinatesContainer.appendChild(subCard);
               }
@@ -99,60 +100,62 @@ export default function Home() {
   };
 
   return (
-    <Layout>
-      <div className="bg-sky-50 font-sans leading-normal tracking-normal">
-        <div className="container mx-auto p-10">
-          <div className="level">
+    <div className="bg-sky-50 font-sans leading-normal tracking-normal text-black">
+      <div className="container mx-auto p-10">
+        <div className="level">
+          <div
+            className="card"
+            onClick={(e) => toggleSubordinates(e.currentTarget)}
+          >
+            <h2 className="text-lg font-semibold">ጽ/ቤት</h2>
+            <p className="name"></p>
+            <p className="description"></p>
+            <p className="phone"></p>
+            <div className="subordinates"></div>
+            <div className="connector"></div>
+          </div>
+        </div>
+
+        <div className="level" id="departments text-black">
+          {[
+            "መዝሙር ክፍል",
+            "ትምህርት ክፍል",
+            "ህፃናት ክፍል",
+            "ግንኙነት",
+            "ኪነ-ጥበብ",
+            "ሂሳብ ክፍል",
+            "ንብረት ክፍል",
+            "ልማት እና በጎአድራጎት",
+          ].map((dept) => (
             <div
-              className="card text-black"
-              onClick={() => toggleSubordinates(this)}
+              className="card border-gray-300"
+              key={dept}
+              onClick={(e) => toggleSubordinates(e.currentTarget)}
             >
-              <h2 className="text-lg font-semibold text-black">ጽ/ቤት</h2>
+              <h2 className="text-lg font-semibold">{dept}</h2>
               <p className="name"></p>
               <p className="description"></p>
-              <p className="phone"></p>
-              <div className="subordinates"></div>
+              <p className="phone "></p>
+              <div className="subordinates flex gap-10px justify-center "></div>
               <div className="connector"></div>
             </div>
-          </div>
-
-          <div className="level" id="departments">
-            {[
-              "መዝሙር ክፍል",
-              "ትምህርት ክፍል",
-              "ህፃናት ክፍል",
-              "ግንኙነት",
-              "ኪነ-ጥበብ",
-              "ሂሳብ ክፍል",
-              "ንብረት ክፍል",
-              "ልማት እና በጎአድራጎት",
-            ].map((dept, idx) => (
-              <div
-                className="card text-black"
-                key={idx}
-                onClick={() => toggleSubordinates(this)}
-              >
-                <h2 className="text-lg font-semibold text-black">{dept}</h2>
-                <p className="name"></p>
-                <p className="description"></p>
-                <p className="phone"></p>
-                <div className="subordinates"></div>
-                <div className="connector"></div>
-              </div>
-            ))}
-          </div>
+          ))}
         </div>
       </div>
 
       <style jsx>{`
+        body {
+          background-color: #f0f9ff;
+        }
+
         .container {
           display: flex;
           justify-content: center;
           align-items: center;
           flex-direction: column;
           padding: 2rem;
+          margin-left: 200px;
         }
-
         .level {
           display: flex;
           justify-content: center;
@@ -160,7 +163,6 @@ export default function Home() {
           position: relative;
           margin-bottom: 2rem;
         }
-
         .level:before {
           content: "";
           position: absolute;
@@ -169,7 +171,6 @@ export default function Home() {
           height: 1px;
           background-color: #ccc;
         }
-
         .card {
           background-color: #fff;
           padding: 1rem;
@@ -181,17 +182,10 @@ export default function Home() {
           position: relative;
           cursor: pointer;
           width: 150px;
-          transition: background-color 0.3s ease;
         }
-
-        .card:hover {
-          background-color: #f0f4f8;
-        }
-
         .card.selected {
           background-color: #cce4ff;
         }
-
         .card:before,
         .card:after {
           content: "";
@@ -201,23 +195,18 @@ export default function Home() {
           height: 1rem;
           background-color: #ccc;
         }
-
         .card:before {
           left: 50%;
         }
-
         .card:after {
           right: 50%;
         }
-
         .card:first-child:before {
           display: none;
         }
-
         .card:last-child:after {
           display: none;
         }
-
         .subordinates {
           display: none;
           flex-wrap: wrap;
@@ -236,18 +225,17 @@ export default function Home() {
           width: 380px;
         }
 
-        .subordinates.is-visible {
-          display: flex;
-        }
-
         .sub-card {
           width: 45%;
           margin: 0.5rem;
           padding: 1rem;
           border: 1px solid #ccc;
           border-radius: 0.5rem;
-          background-color: #f9f9f9;
-          text-align: center;
+          background-color: #ccc;
+          text-align: right;
+        }
+        .card .sub-card {
+          background-color: #ccc;
         }
 
         .connector {
@@ -259,6 +247,8 @@ export default function Home() {
           background-color: #ccc;
         }
       `}</style>
-    </Layout>
+    </div>
   );
-}
+};
+
+export default OrganizationalChart;
