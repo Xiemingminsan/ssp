@@ -3,14 +3,7 @@ import Hierarchy from "../../../models/management";
 import authenticate from "../../../auth";
 import { NextResponse } from "next/server";
 import path from "path";
-import { writeFile, unlink } from "fs/promises";
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: "10mb",
-    },
-  },
-};
+import { writeFile } from "fs/promises";
 
 export async function POST(req) {
   console.log("POST request received");
