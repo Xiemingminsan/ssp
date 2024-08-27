@@ -1,6 +1,5 @@
 // pages/api/events/route.js
 import authenticate from "../../../../auth";
-import EventLog from "../../../../models/eventlog";
 import dbConnect from "../../../../dbConnect";
 import Event from "../../../../models/event";
 
