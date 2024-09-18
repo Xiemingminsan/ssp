@@ -43,7 +43,7 @@ const ItemForm = ({
       </div>
       <button
         type="submit"
-        className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition w-48"
+        className="px-4 py-2 bg-custom-blue text-white rounded-lg hover:bg-custom-blue-dark transition w-48"
       >
         Add Item
       </button>
