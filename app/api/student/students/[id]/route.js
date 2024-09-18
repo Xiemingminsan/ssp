@@ -5,13 +5,6 @@ import authenticate from "../../../../../auth"; // Correct import of the authent
 export async function GET(req, { params }) {
   const authData = await authenticate(req); // Authenticate the request
 
-  if (!authData || !["admin", "manager", "user"].includes(authData.role)) {
-    return new Response(JSON.stringify({ message: "Unauthorized" }), {
-      status: 401,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
-
   await dbConnect();
 
   const { id } = params;
@@ -48,13 +41,6 @@ export async function GET(req, { params }) {
 
 export async function PUT(req, { params }) {
   const authData = await authenticate(req); // Authenticate the request
-
-  if (!authData || authData.role !== "admin") {
-    return new Response(JSON.stringify({ message: "Unauthorized" }), {
-      status: 401,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
 
   await dbConnect();
 
@@ -121,13 +107,6 @@ export async function PUT(req, { params }) {
 
 export async function DELETE(req, { params }) {
   const authData = await authenticate(req); // Authenticate the request
-
-  if (!authData || authData.role !== "admin") {
-    return new Response(JSON.stringify({ message: "Unauthorized" }), {
-      status: 401,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
 
   await dbConnect();
 

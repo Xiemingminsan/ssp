@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useSession } from "next-auth/react"; // Use session to get the user's role
 import HomeIcon from "@mui/icons-material/Home";
 import SchoolIcon from "@mui/icons-material/School";
 import AttendanceIcon from "@mui/icons-material/Today";
@@ -21,26 +22,85 @@ import { signOut } from "next-auth/react";
 const Sidebar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isCompressed, setIsCompressed] = useState(false);
+  const { data: session } = useSession(); // Get the session data, including the user's role
   const router = useRouter();
 
-  const menuItems = [
-    { name: "ዋና", path: "/homepage", icon: <HomeIcon /> },
-    { name: "ኮርሶች", path: "/courses", icon: <SchoolIcon /> },
-    { name: "አቴንዳንስ", path: "/attendance", icon: <AttendanceIcon /> },
-    { name: "አመራሮች", path: "/management", icon: <ManagementIcon /> },/* i have changed the path here */
-    { name: "ተማሪዎች", path: "/students", icon: <StudentsIcon /> },
-    { name: "የትምህርት ክፍላት", path: "/batches", icon: <BatchIcon /> },
-    { name: "ቁሳቁሶች", path: "/items", icon: <ItemsIcon /> },
-    { name: "ደብዳቤዎች", path: "/letter", icon: <LettersIcon /> },
-    { name: "ቅጣት መዝገብ", path: "/conduct", icon: <UsersIcon /> },
-    { name: "ግብ", path: "/userrequest", icon: <ExpenseIcon /> },
+  // Role-specific menu items
+  const allMenuItems = [
+    { name: "ዋና", path: "/homepage", icon: <HomeIcon />, roles: ["admin"] },
+    {
+      name: "ኮርሶች",
+      path: "/courses",
+      icon: <SchoolIcon />,
+      roles: ["admin", "SchoolHead"],
+    },
+    {
+      name: "አቴንዳንስ",
+      path: "/attendance",
+      icon: <AttendanceIcon />,
+      roles: ["SchoolHead"],
+    },
+    {
+      name: "አመራሮች",
+      path: "/management",
+      icon: <ManagementIcon />,
+      roles: ["admin"],
+    },
+    {
+      name: "ተማሪዎች",
+      path: "/students",
+      icon: <StudentsIcon />,
+      roles: ["admin", "SchoolHead"],
+    },
+    {
+      name: "የትምህርት ክፍላት",
+      path: "/batches",
+      icon: <BatchIcon />,
+      roles: ["admin", "SchoolHead"],
+    },
+    {
+      name: "ቁሳቁሶች",
+      path: "/items",
+      icon: <ItemsIcon />,
+      roles: ["admin", "InventoryHead"],
+    },
+    {
+      name: "ደብዳቤዎች",
+      path: "/letter",
+      icon: <LettersIcon />,
+      roles: ["admin", "LetterHead"],
+    },
+    {
+      name: "ቅጣት መዝገብ",
+      path: "/conduct",
+      icon: <UsersIcon />,
+      roles: ["admin", "ConductHead"],
+    },
+    {
+      name: "ግብ",
+      path: "/userrequest",
+      icon: <ExpenseIcon />,
+      roles: ["admin"],
+    },
     {
       name: "ውጣ",
       path: "/",
       icon: <LogoutIcon />,
       action: () => signOut(), // Trigger signOut on click
+      roles: [
+        "admin",
+        "SchoolHead",
+        "LetterHead",
+        "InventoryHead",
+        "ConductHead",
+      ], // All roles can see this
     },
   ];
+
+  // Filter the menu items based on the user's role from the session
+  const filteredMenuItems = allMenuItems.filter((item) => {
+    return item.roles.includes(session?.user?.role); // Only show items for the user's role
+  });
 
   return (
     <div
@@ -63,7 +123,7 @@ const Sidebar = () => {
             height={80}
           />
         </li>
-        {menuItems.map((item, index) => (
+        {filteredMenuItems.map((item, index) => (
           <li
             key={index}
             className={router.pathname === item.path ? "selected" : ""}

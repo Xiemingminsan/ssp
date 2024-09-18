@@ -6,14 +6,6 @@ import Item from "../../../../models/item";
 export async function POST(req) {
   const authData = await authenticate(req);
 
-  // Authentication check
-  if (!authData || !["admin", "manager", "user"].includes(authData.role)) {
-    return new Response(JSON.stringify({ message: "Unauthorized" }), {
-      status: 401,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
-
   await dbConnect();
 
   try {

@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import User from "../../../../models/user";
+import Management from "../../../../models/management";
 import dbConnect from "../../../../dbConnect";
 
 export const authOptions = {
@@ -16,29 +17,40 @@ export const authOptions = {
         // Connect to the database
         await dbConnect();
 
-        // Find the user in the database
-        const user = await User.findOne({ username: credentials.username });
+        // First, try to find the user in the User model
+        let user = await User.findOne({ username: credentials.username });
 
+        // If not found, try to find the user in the Management model using email
+        let management = null;
         if (!user) {
-          throw new Error("User not found");
+          management = await Management.findOne({
+            email: credentials.username,
+          });
         }
 
-        // Check if the password is correct
-        const isPasswordValid = await bcrypt.compare(
-          credentials.password,
-          user.passwordhash
-        );
+        // If neither user nor management is found, throw an error
+        if (!user && !management) {
+          throw new Error("M or U   not found");
+        }
 
+        await bcrypt.console.log(user.passwordhash);
+
+        // Determine which model to use and validate the password
+        const isPasswordValid = user
+          ? await bcrypt.compare(credentials.password, user.passwordhash)
+          : await bcrypt.compare(credentials.password, management.password);
+
+        console.log;
         if (!isPasswordValid) {
           throw new Error("Invalid credentials");
         }
 
-        // Return the user object (excluding sensitive fields)
+        // Return the user object (for NextAuth) with management or user details
         return {
-          id: user._id,
-          name: user.username,
-          email: user.email,
-          role: user.role,
+          id: user ? user._id : management._id,
+          name: user ? user.username : management.name,
+          email: user ? user.email : management.email,
+          role: user ? user.role : management.role,
         };
       },
     }),

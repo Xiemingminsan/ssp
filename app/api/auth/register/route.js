@@ -1,6 +1,6 @@
-import bcrypt from 'bcrypt';
-import dbConnect from '../../../../dbConnect';
-import User from '../../../../models/user';
+import bcrypt from "bcrypt";
+import dbConnect from "../../../../dbConnect";
+import User from "../../../../models/user";
 
 export async function POST(req) {
   await dbConnect();
@@ -11,18 +11,21 @@ export async function POST(req) {
     // Check if the username already exists
     const existingUser = await User.findOne({ username });
     if (existingUser) {
-      return new Response(JSON.stringify({ message: 'username already exists' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return new Response(
+        JSON.stringify({ message: "username already exists" }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
     }
 
     // Check if the email already exists
     const existingEmail = await User.findOne({ email });
     if (existingEmail) {
-      return new Response(JSON.stringify({ message: 'email already exists' }), {
+      return new Response(JSON.stringify({ message: "email already exists" }), {
         status: 400,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { "Content-Type": "application/json" },
       });
     }
 
@@ -30,7 +33,7 @@ export async function POST(req) {
     const passwordhash = await bcrypt.hash(password, 10);
 
     // Set the user role
-    const userRole = role || 'user';  // Default role to 'user' if not provided
+    const userRole = role || "admin"; // Default role to 'user' if not provided
 
     const newUser = new User({
       username,
@@ -41,14 +44,23 @@ export async function POST(req) {
 
     await newUser.save();
 
-    return new Response(JSON.stringify({ message: 'User created successfully' }), {
-      status: 201,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return new Response(
+      JSON.stringify({ message: "User created successfully" }),
+      {
+        status: 201,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   } catch (error) {
-    return new Response(JSON.stringify({ message: 'Internal Server Error', error: error.message }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return new Response(
+      JSON.stringify({
+        message: "Internal Server Error",
+        error: error.message,
+      }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   }
 }

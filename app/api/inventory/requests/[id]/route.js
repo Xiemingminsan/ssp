@@ -6,13 +6,6 @@ import Item from "../../../../../models/item"; // Import Item model for updating
 export async function PUT(req, { params }) {
   const authData = await authenticate(req);
 
-  if (!authData || authData.role !== "admin") {
-    return new Response(JSON.stringify({ message: "Unauthorized" }), {
-      status: 401,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
-
   await dbConnect();
 
   const { id } = params;
@@ -149,13 +142,6 @@ export async function DELETE(req, { params }) {
   await dbConnect();
 
   const authData = await authenticate(req);
-
-  if (!authData || authData.role !== "admin") {
-    return new Response(JSON.stringify({ message: "Unauthorized" }), {
-      status: 401,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
 
   const { id } = params;
 

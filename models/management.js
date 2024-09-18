@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const ManagementSchema = new mongoose.Schema({
   name: {
@@ -7,7 +7,8 @@ const ManagementSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    required: false,
+    required: true,
+    enum: ["SchoolHead", "InventoryHead", "LetterHead", "ConductHead"],
   },
   phone: {
     type: String,
@@ -25,10 +26,18 @@ const ManagementSchema = new mongoose.Schema({
     type: Boolean,
     required: false,
   },
+  email: {
+    type: String,
+    required: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
 });
 
-// Check if the model already exists
+// Ensure correct model name and schema registration
 const Management =
   mongoose.models.Management || mongoose.model("Management", ManagementSchema);
 
-module.exports = Management;
+export default Management;

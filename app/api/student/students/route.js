@@ -11,13 +11,6 @@ export async function POST(req) {
 
   const authData = await authenticate(req);
 
-  if (!authData || authData.role !== "admin") {
-    return new Response(JSON.stringify({ message: "Unauthorized" }), {
-      status: 401,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
-
   const {
     firstname,
     middlename,
@@ -151,13 +144,6 @@ export async function GET(req) {
   await dbConnect();
 
   const authData = await authenticate(req);
-
-  if (!authData || authData.role !== "admin") {
-    return new Response(JSON.stringify({ message: "Unauthorized" }), {
-      status: 401,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
 
   try {
     const students = await Student.find();

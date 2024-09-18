@@ -7,13 +7,6 @@ export async function GET(req) {
   await dbConnect();
 
   // Authenticate the user
-  const authData = await authenticate(req);
-  if (!authData || !["admin", "teacher"].includes(authData.role)) {
-    return new Response(JSON.stringify({ message: "Unauthorized" }), {
-      status: 401,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
 
   const { searchParams } = new URL(req.url);
   const batchName = searchParams.get("batchName");

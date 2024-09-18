@@ -9,6 +9,8 @@ const CreateHierarchy = ({ onClose, editData }) => {
     role: "",
     description: "",
     isActive: "true",
+    email: "",
+    password: "",
   });
   const [photo, setPhoto] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(
@@ -25,6 +27,8 @@ const CreateHierarchy = ({ onClose, editData }) => {
         role: editData.role,
         description: editData.description,
         isActive: editData.isActive.toString(),
+        email: editData.email,
+        password: editData.password,
       });
       setPhotoPreview(
         editData.photo
@@ -145,6 +149,40 @@ const CreateHierarchy = ({ onClose, editData }) => {
           className="mt-1 p-2 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
         />
       </div>
+      <div>
+        <label
+          htmlFor="email"
+          className="block text-sm font-medium text-gray-700"
+        >
+          {" "}
+          Email{" "}
+        </label>
+        <input
+          type="email"
+          name="email"
+          id="email"
+          value={formData.email}
+          onChange={handleChange}
+          className="mt-1 p-2 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+        />
+      </div>
+
+      <div className="mb-4">
+        <label
+          htmlFor="password"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Password
+        </label>
+        <input
+          type="password"
+          name="password"
+          id="password"
+          value={formData.password}
+          onChange={handleChange}
+          className="mt-1 p-2 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+        />
+      </div>
 
       <div className="mb-4">
         <label
@@ -161,41 +199,12 @@ const CreateHierarchy = ({ onClose, editData }) => {
           className="mt-1 p-2 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
         >
           <option value="" disabled>
-            Select Department
+            Select Head of Department
           </option>
-          <option value="ጽ/ቤት">ጽ/ቤት</option>
-          <option value="መዝሙር ክፍል">መዝሙር ክፍል</option>
-          <option value="ትምህርት ክፍል">ትምህርት ክፍል</option>
-          <option value="ህፃናት ክፍል">ህፃናት ክፍል</option>
-          <option value="ግንኙነት">ግንኙነት</option>
-          <option value="ኪነ-ጥበብ">ኪነ-ጥበብ</option>
-          <option value="ሂሳብ ክፍል">ሂሳብ ክፍል</option>
-          <option value="ንብረት ክፍል">ንብረት ክፍል</option>
+          <option value="SchoolHead">ትምህርት ክፍል</option>
+          <option value="LetterHead">ደብዳቤ ክፍል</option>
+          <option value="ConductHead">ቅጣት ክፍል</option>
           <option value="ልማት እና በጎአድራጎት">ልማት እና በጎአድራጎት</option>
-        </select>
-      </div>
-
-      <div className="mb-4">
-        <label
-          htmlFor="description"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Description
-        </label>
-        <select
-          name="description"
-          id="description"
-          value={formData.description}
-          onChange={handleChange}
-          className="mt-1 p-2 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-        >
-          <option value="" disabled>
-            Select Role
-          </option>
-          <option value="ሰብሳቢ">ሰብሳቢ</option>
-          <option value="ም/ሰብሳቢ">ም/ሰብሳቢ</option>
-          <option value="ፀሃፊ">ፀሃፊ</option>
-          <option value="አባል">አባል</option>
         </select>
       </div>
 

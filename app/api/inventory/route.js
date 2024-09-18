@@ -5,14 +5,6 @@ import authenticate from "../../../auth";
 export async function POST(req) {
   const authData = await authenticate(req); // Authenticate the request
 
-  // Authentication check
-  if (!authData || authData.role !== "admin") {
-    return new Response(JSON.stringify({ message: "Unauthorized" }), {
-      status: 401,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
-
   await dbConnect();
 
   try {
@@ -59,14 +51,6 @@ export async function POST(req) {
 
 export async function GET(req) {
   const authData = await authenticate(req); // Authenticate the request
-
-  // Authentication check
-  if (!authData || authData.role !== "admin") {
-    return new Response(JSON.stringify({ message: "Unauthorized" }), {
-      status: 401,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
 
   await dbConnect();
 

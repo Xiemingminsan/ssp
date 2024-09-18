@@ -4,7 +4,7 @@ import authenticate from "../../../auth";
 import { NextResponse } from "next/server";
 import path from "path";
 import { writeFile } from "fs/promises";
-
+import bcrypt from "bcrypt"; // Added for hashing passwords
 export async function POST(req) {
   console.log("POST request received");
 
@@ -15,19 +15,25 @@ export async function POST(req) {
     const authData = await authenticate(req);
     console.log("Auth data:", authData);
 
-    if (!authData || authData.role !== "admin") {
-      console.log("Unauthorized access attempt");
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-    }
-
     const formData = await req.formData();
-    console.log("Received form data keys:", Array.from(formData.keys()));
-
     const name = formData.get("name");
     const role = formData.get("role");
     const phone = formData.get("phone");
     const description = formData.get("description");
     const isActive = formData.get("isActive") === "true";
+    const email = formData.get("email");
+    const password = formData.get("password");
+
+    console.log(
+      "Extracted values - name:",
+      name,
+      "role:",
+      role,
+      "email:",
+      email,
+      "password:",
+      password
+    );
 
     let photoPath = undefined;
     const photoFile = formData.get("photo");
@@ -41,8 +47,11 @@ export async function POST(req) {
         filename
       );
       await writeFile(filepath, buffer);
-      photoPath = `${filename}`;
+      photoPath = filename;
     }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const newHierarchy = new Hierarchy({
       name,
@@ -51,15 +60,19 @@ export async function POST(req) {
       description,
       isActive,
       photo: photoPath,
+      email: email || "default@example.com",
+      password: hashedPassword || "defaultPassword",
     });
 
     console.log("New hierarchy object created:", {
-      name,
-      role,
-      phone,
-      description,
-      isActive,
-      photo: photoPath,
+      name: newHierarchy.name,
+      role: newHierarchy.role,
+      phone: newHierarchy.phone,
+      description: newHierarchy.description,
+      isActive: newHierarchy.isActive,
+      photo: newHierarchy.photo,
+      email: newHierarchy.email,
+      password: newHierarchy.password,
     });
 
     const savedHierarchy = await newHierarchy.save();

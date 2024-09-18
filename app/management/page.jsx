@@ -109,7 +109,10 @@ const HierarchyTable = ({ isAdmin }) => {
                       ሃላፊነት
                     </th>
                     <th className="text-sm font-semibold text-gray-800 uppercase tracking-wider py-3 px-6">
-                      Actions
+                      ኢሜይል
+                    </th>
+                    <th className="text-sm font-semibold text-gray-800 uppercase tracking-wider py-3 px-6">
+                      የማስተካከያ ቁጥር
                     </th>
                   </tr>
                 </thead>
@@ -142,6 +145,9 @@ const HierarchyTable = ({ isAdmin }) => {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             {item.description}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {item.email}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="flex space-x-2">

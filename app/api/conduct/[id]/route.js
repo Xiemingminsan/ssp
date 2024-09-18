@@ -11,12 +11,6 @@ export async function GET(req, { params }) {
 
   const authData = await authenticate(req);
 
-  if (!authData || authData.role !== "admin") {
-    return new Response(JSON.stringify({ message: "Unauthorized" }), {
-      status: 401,
-    });
-  }
-
   const { id } = params;
 
   try {
@@ -48,12 +42,6 @@ export async function PUT(req, { params }) {
   await dbConnect();
 
   const authData = await authenticate(req);
-
-  if (!authData || authData.role !== "admin") {
-    return new Response(JSON.stringify({ message: "Unauthorized" }), {
-      status: 401,
-    });
-  }
 
   const { id } = params;
   const { person, action, reason, punishment, punishmentEndDate } =
@@ -112,12 +100,6 @@ export async function DELETE(req, { params }) {
   await dbConnect();
 
   const authData = await authenticate(req);
-
-  if (!authData || authData.role !== "admin") {
-    return new Response(JSON.stringify({ message: "Unauthorized" }), {
-      status: 401,
-    });
-  }
 
   const { id } = params;
 

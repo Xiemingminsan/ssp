@@ -9,12 +9,6 @@ export async function POST(req) {
 
   const authData = await authenticate(req);
 
-  if (!authData || authData.role !== "admin") {
-    return new Response(JSON.stringify({ message: "Unauthorized" }), {
-      status: 401,
-    });
-  }
-
   const { person, action, reason, punishment, punishmentEndDate } =
     await req.json();
 
@@ -58,12 +52,6 @@ export async function GET(req) {
   await dbConnect();
 
   const authData = await authenticate(req);
-
-  if (!authData || authData.role !== "admin") {
-    return new Response(JSON.stringify({ message: "Unauthorized" }), {
-      status: 401,
-    });
-  }
 
   try {
     const conducts = await Conduct.find();

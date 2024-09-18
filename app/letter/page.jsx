@@ -24,7 +24,7 @@ export default function LetterManager() {
 
   useEffect(() => {
     loadLetters();
-  }, []);
+  });
 
   const loadLetters = async () => {
     try {
@@ -172,6 +172,7 @@ export default function LetterManager() {
 
   useEffect(() => {
     filterLetters();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm, letters]);
 
   const openModal = (letter = null) => {

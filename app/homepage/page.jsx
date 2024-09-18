@@ -382,15 +382,11 @@ const SalesDashboard = () => {
                       <th className="p-2">Name</th>
                       <th className="p-2">Phone</th>
                       <th className="p-2">Role</th>
-                      <th className="p-2">Description</th>
                     </tr>
                   </thead>
                   <tbody>
                     {teamMembers
-                      .filter(
-                        (member) =>
-                          member.role === "ጽ/ቤት" && member.isActive === true
-                      )
+                      .filter((member) => member.isActive === true)
                       .sort((a, b) => {
                         const order = ["ሰብሳቢ", "ም/ሰብሳቢ", "ፀሃፊ", "አባል"];
                         return (
@@ -426,23 +422,6 @@ const SalesDashboard = () => {
                             </div>
                           </td>
                           <td className="p-2">{member.phone}</td>
-                          <td className="p-2">
-                            <span
-                              className={`${
-                                member.description === "ም/ሰብሳቢ"
-                                  ? "text-green-700 bg-green-100"
-                                  : member.description === "ሰብሳቢ"
-                                  ? "text-yellow-700 bg-yellow-100"
-                                  : member.description === "ፀሃፊ"
-                                  ? "text-blue-700 bg-blue-100"
-                                  : member.description === "አባል"
-                                  ? "text-red-700 bg-red-100"
-                                  : ""
-                              } rounded-lg px-2 py-1`}
-                            >
-                              {member.description}
-                            </span>
-                          </td>
                           <td className="p-2">{member.role}</td>
                         </tr>
                       ))}

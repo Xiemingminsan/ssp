@@ -54,13 +54,6 @@ export async function DELETE(req, { params }) {
 
   const authData = await authenticate(req);
 
-  if (!authData || authData.role !== "admin") {
-    return new Response(JSON.stringify({ message: "Unauthorized" }), {
-      status: 401,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
-
   const { id } = params;
 
   try {

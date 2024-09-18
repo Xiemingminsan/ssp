@@ -49,7 +49,7 @@ body {
 }
 
 .sidebar {
-  background-color: #1d4ed8; /* Ensure the sidebar color is applied immediately */
+  background-color: #0066cc; /* Ensure the sidebar color is applied immediately */
   width: 250px;
   height: 100%;
 }
@@ -89,7 +89,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(7, 102, 245, 0.8); /* Semi-transparent background */
+  background-color: #0066cc;
   z-index: 9999;
 }
 

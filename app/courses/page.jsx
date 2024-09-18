@@ -22,10 +22,12 @@ export default function CourseManager() {
   useEffect(() => {
     loadCourses();
     fetchBatches(); // Fetch batches when the component loads
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     filterCourses();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm, courses]);
 
   const loadCourses = async () => {

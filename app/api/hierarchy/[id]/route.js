@@ -12,12 +12,6 @@ export async function GET(req, { params }) {
 
   const authData = await authenticate(req);
 
-  if (!authData || authData.role !== "admin") {
-    return new Response(JSON.stringify({ message: "Unauthorized" }), {
-      status: 401,
-    });
-  }
-
   const { id } = params;
 
   try {
@@ -54,11 +48,6 @@ export async function PUT(req, { params }) {
 
     const authData = await authenticate(req);
     console.log("Auth data:", authData);
-
-    if (!authData || authData.role !== "admin") {
-      console.log("Unauthorized access attempt");
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-    }
 
     const { id } = params;
     console.log("Received ID from params:", id);
@@ -167,13 +156,6 @@ export async function PUT(req, { params }) {
 export async function DELETE(req, { params }) {
   console.log("delete request arrived" + req.params);
   const authData = await authenticate(req);
-
-  if (!authData || authData.role !== "admin") {
-    return new Response(JSON.stringify({ message: "Unauthorized" }), {
-      status: 401,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
 
   await dbConnect();
 

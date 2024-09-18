@@ -8,12 +8,6 @@ export async function POST(req) {
 
   const authData = await authenticate(req);
 
-  if (!authData || authData.role !== "admin") {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), {
-      status: 401,
-    });
-  }
-
   try {
     const { subject, sender, receiver, date, description, status } =
       await req.json(); // Destructure fields from the request body

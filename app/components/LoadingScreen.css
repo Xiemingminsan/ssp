@@ -21,7 +21,7 @@
   height: 100%;
   border-radius: 50%;
   border: 8px solid rgba(255, 255, 255, 0.2);
-  border-top-color: #3b2ad8;
+  border-top-color: #0066cc;
   animation: spin 1s linear infinite;
 }
 
@@ -38,5 +38,5 @@
   margin-top: 20px;
   font-size: 1.5rem;
   font-weight: bold;
-  color: #3b2ad8;
+  color: #0066cc;
 }

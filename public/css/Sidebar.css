@@ -7,7 +7,7 @@
   padding-top: 2rem;
   top: 0;
   left: 0;
-  background-color: #3b2ad8;
+  background-color: #0066cc;
   color: #fff;
   transition: transform 0.3s ease, width 0.3s ease;
   transform: translateX(0);
@@ -69,7 +69,7 @@
   position: fixed;
   top: 10px;
   left: 10px;
-  background-color: #3b2ad8;
+  background-color: #0066cc;
   color: white;
   border: none;
   padding: 10px;

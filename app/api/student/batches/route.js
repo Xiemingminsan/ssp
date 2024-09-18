@@ -48,13 +48,6 @@ export async function POST(req) {
 export async function GET(req) {
   const authData = await authenticate(req);
 
-  if (!authData || !["admin", "manager", "user"].includes(authData.role)) {
-    return new Response(JSON.stringify({ message: "Unauthorized" }), {
-      status: 401,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
-
   await dbConnect();
 
   try {
