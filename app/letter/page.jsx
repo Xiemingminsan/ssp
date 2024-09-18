@@ -24,7 +24,7 @@ export default function LetterManager() {
 
   useEffect(() => {
     loadLetters();
-  });
+  }, []);
 
   const loadLetters = async () => {
     try {

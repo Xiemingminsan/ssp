@@ -33,8 +33,6 @@ export const authOptions = {
           throw new Error("M or U   not found");
         }
 
-        await bcrypt.console.log(user.passwordhash);
-
         // Determine which model to use and validate the password
         const isPasswordValid = user
           ? await bcrypt.compare(credentials.password, user.passwordhash)

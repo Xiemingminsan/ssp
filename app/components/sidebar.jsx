@@ -18,9 +18,12 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import "../../public/css/Sidebar.css";
 import Image from "next/image";
 import { signOut } from "next-auth/react";
+import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
+import LoadingScreen from "./LoadingScreen";
 
 const Sidebar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [isCompressed, setIsCompressed] = useState(false);
   const { data: session } = useSession(); // Get the session data, including the user's role
   const router = useRouter();
@@ -86,7 +89,19 @@ const Sidebar = () => {
       name: "ውጣ",
       path: "/",
       icon: <LogoutIcon />,
-      action: () => signOut(), // Trigger signOut on click
+      action: async () => {
+        setLoading(true); // Show loading indicator
+
+        try {
+          await signOut({ redirect: false }); // Prevent automatic redirection
+          showSuccessToast("Successfully logged out");
+          router.push("/login"); // Manually redirect to login page
+        } catch (error) {
+          showErrorToast("Logout failed");
+        } finally {
+          setLoading(false); // Hide loading indicator
+        }
+      },
       roles: [
         "admin",
         "SchoolHead",
