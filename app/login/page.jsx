@@ -2,7 +2,7 @@
 
 import "../../public/css/login.css";
 import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation"; // Import useRouter
 import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
@@ -32,12 +32,38 @@ const LoginPage = () => {
     } else {
       // Login successful
       showSuccessToast("Login successful!");
-      setIsLoading(true); // Show loading indicator during redirection
 
-      // Redirect the user based on their role or to a default page
-      // You can fetch the session to get the user's role if needed
-      router.push("/"); // Redirect to the home page or appropriate page
-      console.log("it should work");
+      // Delay loading indicator
+      setTimeout(() => {
+        setIsLoading(true); // Show loading indicator during redirection
+        // Optionally redirect or perform any other action here
+      }, 1000);
+      const session = await getSession();
+
+      let redirectPath = "/"; // Default redirect path
+
+      // Redirect user based on their role
+      switch (session?.user?.role) {
+        case "admin":
+          redirectPath = "/homepage";
+          break;
+        case "LetterHead":
+          redirectPath = "/letter";
+          break;
+        case "SchoolHead":
+          redirectPath = "/students";
+          break;
+        case "InventoryHead":
+          redirectPath = "/items";
+          break;
+        case "ConductHead":
+          redirectPath = "/conduct";
+          break;
+        default:
+          redirectPath = "/"; // Default path if role is undefined
+      }
+
+      router.push(redirectPath);
     }
   };
 
@@ -105,7 +131,6 @@ const LoginPage = () => {
                   id="rememberMe"
                   className="mr-2"
                   disabled={isSubmitting || isLoading}
-                  // Add functionality if needed
                 />
                 <label htmlFor="rememberMe" className="text-gray-700">
                   Remember Me
