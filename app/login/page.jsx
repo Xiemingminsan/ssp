@@ -37,6 +37,7 @@ const LoginPage = () => {
       // Redirect the user based on their role or to a default page
       // You can fetch the session to get the user's role if needed
       router.push("/"); // Redirect to the home page or appropriate page
+      console.log("it should work");
     }
   };
 
