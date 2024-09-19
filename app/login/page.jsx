@@ -1,61 +1,46 @@
+// app/login/page.jsx
+
 "use client";
 
 import "../../public/css/login.css";
 import { useState } from "react";
-import { signIn, getSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import Image from "next/image";
-import { useRouter } from "next/navigation"; // Import useRouter
-import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
+import { showErrorToast } from "../utils/toastUtils";
 import LoadingScreen from "../components/LoadingScreen";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false); // For disabling the submit button
-  const [isLoading, setIsLoading] = useState(false); // For loading indicator during redirect
-  const router = useRouter(); // Initialize useRouter
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true); // Disable the submit button to prevent multiple clicks
+    setIsSubmitting(true);
 
     const result = await signIn("credentials", {
-      redirect: false, // Prevent NextAuth from redirecting automatically
+      redirect: false,
       username,
       password,
     });
 
     if (result.error) {
-      // Login failed
       showErrorToast(result.error || "Login failed. Please try again.");
-      setIsSubmitting(false); // Re-enable the submit button
+      setIsSubmitting(false);
     } else {
-      // Login successful
-      showSuccessToast("Login successful!");
-
-      // Delay loading indicator
-      setTimeout(() => {
-        setIsLoading(true); // Show loading indicator during redirection
-        // Optionally redirect or perform any other action here
-      }, 1000);
-
-      // Let NextAuth handle redirection
+      // Let NextAuth handle the redirection
       await signIn("credentials", {
         redirect: true,
-        callbackUrl: "/", // Redirect to the root path
+        callbackUrl: "/", // Redirect to root, middleware will handle further redirection
         username,
         password,
       });
-
-      // Redirect user based on their role
-
-      router.push(redirectPath);
     }
   };
 
   return (
     <>
-      {isLoading && <LoadingScreen />}
+      {isSubmitting && <LoadingScreen />}
       <div className="background-container">
         <div className="main-cont">
           <div className="flex justify-center mb-6">
@@ -88,7 +73,7 @@ const LoginPage = () => {
                 className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 text-black"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                disabled={isSubmitting || isLoading}
+                disabled={isSubmitting}
               />
             </div>
             <div className="mb-4">
@@ -107,7 +92,7 @@ const LoginPage = () => {
                 className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 text-black"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                disabled={isSubmitting || isLoading}
+                disabled={isSubmitting}
               />
             </div>
             <div className="flex items-center justify-between mb-4">
@@ -116,7 +101,7 @@ const LoginPage = () => {
                   type="checkbox"
                   id="rememberMe"
                   className="mr-2"
-                  disabled={isSubmitting || isLoading}
+                  disabled={isSubmitting}
                 />
                 <label htmlFor="rememberMe" className="text-gray-700">
                   Remember Me
@@ -132,7 +117,7 @@ const LoginPage = () => {
             <button
               type="submit"
               className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600"
-              disabled={isSubmitting || isLoading}
+              disabled={isSubmitting}
             >
               {isSubmitting ? "Logging in..." : "Login"}
             </button>

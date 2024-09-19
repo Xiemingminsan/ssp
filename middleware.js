@@ -1,17 +1,18 @@
+// middleware.js
+
 import { NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
 export async function middleware(request) {
-  const url = new URL(request.url);
+  const url = request.nextUrl.clone();
   const token = await getToken({
     req: request,
     secret: process.env.NEXTAUTH_SECRET,
   });
 
-  // Extract user role from token (if user is logged in)
-  const userRole = token?.role;
+  // Debugging logs (Remove or comment out in production)
+  // console.log("Middleware - Token:", token);
 
-  // Default redirect pages for each role
   const roleRedirects = {
     admin: "/homepage",
     LetterHead: "/letter",
@@ -20,55 +21,27 @@ export async function middleware(request) {
     ConductHead: "/conduct",
   };
 
-  // Protected routes with allowed roles
-  const protectedRoutes = {
-    "/management": ["admin"],
-    "/homepage": ["admin"],
-    "/students": ["admin", "SchoolHead"],
-    "/batches": ["admin", "SchoolHead"],
-    "/attendance": ["SchoolHead"],
-    "/courses": ["admin", "SchoolHead"],
-    "/items": ["admin", "InventoryHead"],
-    "/conduct": ["admin", "ConductHead"],
-    "/letter": ["admin", "LetterHead"],
-    "/api/inventory": ["admin"],
-    "/api/student": ["admin", "SchoolHead"],
-    "/api/conduct": ["admin", "ConductHead"],
-    "/api/event": ["admin"],
-    "/api/session": ["admin"],
-    "/api/letters": ["admin", "LetterHead"],
-    "/api/hierarchy": ["admin"],
-    "/api/users": ["admin"],
-  };
-
-  // Redirect based on role if user is authenticated and accessing the root path
-  if (url.pathname === "/") {
-    if (userRole) {
-      const redirectPath = roleRedirects[userRole] || "/homepage";
-      return NextResponse.redirect(new URL(redirectPath, request.url));
-    } else {
-      // Allow unauthenticated users to see the root page
-      return NextResponse.next();
+  if (!token) {
+    // If user is not authenticated
+    if (url.pathname !== "/login") {
+      url.pathname = "/login";
+      return NextResponse.redirect(url, { status: 303 });
+    }
+    return NextResponse.next();
+  } else {
+    // If user is authenticated
+    if (url.pathname === "/login" || url.pathname === "/") {
+      // Redirect authenticated users away from login page
+      const redirectPath = roleRedirects[token.role] || "/homepage";
+      url.pathname = redirectPath;
+      return NextResponse.redirect(url, { status: 303 });
     }
   }
 
-  // Check if the route is protected and enforce role-based access
-  for (const [route, allowedRoles] of Object.entries(protectedRoutes)) {
-    if (url.pathname.startsWith(route)) {
-      if (!userRole || !allowedRoles.includes(userRole)) {
-        if (url.pathname.startsWith("/api")) {
-          // For APIs, return an unauthorized error response
-          return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
-        } else {
-          // For regular routes, redirect to appropriate role-based page or login
-          const redirectPath = roleRedirects[userRole] || "/login";
-          return NextResponse.redirect(new URL(redirectPath, request.url));
-        }
-      }
-    }
-  }
-
-  return NextResponse.next();
+  // Set no-cache to prevent caching issues
+  const response = NextResponse.next();
+  response.headers.set("x-middleware-cache", "no-cache");
+  return response;
 }
 
 export const config = {
