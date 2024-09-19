@@ -28,6 +28,10 @@ const LoginPage = () => {
       showErrorToast(result.error || "Login failed. Please try again.");
       setIsSubmitting(false);
     } else {
+      setTimeout(() => {
+        setIsLoading(true); // Show loading indicator during redirection
+        // Optionally redirect or perform any other action here
+      }, 1000);
       // Let NextAuth handle the redirection
       await signIn("credentials", {
         redirect: true,
