@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useSession } from "next-auth/react"; // Use session to get the user's role
+import { useSession, signOut } from "next-auth/react"; // Import signOut
 import HomeIcon from "@mui/icons-material/Home";
 import SchoolIcon from "@mui/icons-material/School";
 import AttendanceIcon from "@mui/icons-material/Today";
@@ -17,15 +17,12 @@ import UsersIcon from "@mui/icons-material/People";
 import LogoutIcon from "@mui/icons-material/Logout";
 import "../../public/css/Sidebar.css";
 import Image from "next/image";
-import { signOut } from "next-auth/react";
-import { showSuccessToast, showErrorToast } from "../utils/toastUtils";
-import LoadingScreen from "./LoadingScreen";
+import { showSuccessToast } from "../utils/toastUtils";
 
 const Sidebar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [isCompressed, setIsCompressed] = useState(false);
-  const { data: session } = useSession(); // Get the session data, including the user's role
+  const { data: session } = useSession(); // Get the session data
   const router = useRouter();
 
   // Role-specific menu items
@@ -87,20 +84,11 @@ const Sidebar = () => {
     },
     {
       name: "ውጣ",
-      path: "/",
+      path: "/login",
       icon: <LogoutIcon />,
-      action: async () => {
-        setLoading(true); // Show loading indicator
-
-        try {
-          await signOut({ redirect: false }); // Prevent automatic redirection
-          showSuccessToast("Successfully logged out");
-          router.push("/login"); // Manually redirect to login page
-        } catch (error) {
-          showErrorToast("Logout failed");
-        } finally {
-          setLoading(false); // Hide loading indicator
-        }
+      action: () => {
+        signOut({ callbackUrl: "/login" }); // Let NextAuth handle logout redirection
+        showSuccessToast("Successfully logged out");
       },
       roles: [
         "admin",
@@ -108,13 +96,13 @@ const Sidebar = () => {
         "LetterHead",
         "InventoryHead",
         "ConductHead",
-      ], // All roles can see this
+      ],
     },
   ];
 
   // Filter the menu items based on the user's role from the session
   const filteredMenuItems = allMenuItems.filter((item) => {
-    return item.roles.includes(session?.user?.role); // Only show items for the user's role
+    return item.roles.includes(session?.user?.role);
   });
 
   return (

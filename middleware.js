@@ -1,8 +1,13 @@
 import { NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt"; // For fetching the JWT in middleware
+import { getToken } from "next-auth/jwt";
 
 export async function middleware(request) {
   const url = new URL(request.url);
+  const token = await getToken({
+    req: request,
+    secret: process.env.NEXTAUTH_SECRET,
+  });
+
   const userAgent = request.headers.get("user-agent") || "";
   const isMobile = /mobile|android|iphone|ipad|tablet/i.test(userAgent);
 
@@ -10,11 +15,6 @@ export async function middleware(request) {
   if (isMobile && url.pathname !== "/notallowed") {
     return NextResponse.redirect(new URL("/notallowed", request.url));
   }
-
-  const token = await getToken({
-    req: request,
-    secret: process.env.NEXTAUTH_SECRET,
-  });
 
   // Extract user role from token (if user is logged in)
   const userRole = token?.role;
@@ -24,7 +24,7 @@ export async function middleware(request) {
     "/homepage": ["admin"],
     "/students": ["admin", "SchoolHead"],
     "/batches": ["admin", "SchoolHead"],
-    "/attendances": ["SchoolHead"],
+    "/attendance": ["SchoolHead"],
     "/courses": ["admin", "SchoolHead"],
     "/items": ["admin", "InventoryHead"],
     "/conduct": ["admin", "ConductHead"],
@@ -36,7 +36,7 @@ export async function middleware(request) {
     "/api/session": ["admin"],
     "/api/letters": ["admin", "LetterHead"],
     "/api/hierarchy": ["admin"],
-    "api/users": ["admin"],
+    "/api/users": ["admin"],
   };
 
   // Default redirect pages for each role
@@ -56,7 +56,7 @@ export async function middleware(request) {
           // For APIs, return an error response instead of redirecting
           return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
         } else {
-          const redirectPath = roleRedirects[userRole] || "/homepage";
+          const redirectPath = roleRedirects[userRole] || "/login";
           return NextResponse.redirect(new URL(redirectPath, request.url));
         }
       }
@@ -67,5 +67,5 @@ export async function middleware(request) {
 }
 
 export const config = {
-  matcher: ["/:path*", "/api/:path*"], // Applies to all routes and APIs
+  matcher: ["/((?!api/auth|_next/static|_next/image|favicon.ico).*)"],
 };
