@@ -8,17 +8,19 @@ export async function middleware(request) {
     secret: process.env.NEXTAUTH_SECRET,
   });
 
-  const userAgent = request.headers.get("user-agent") || "";
-  const isMobile = /mobile|android|iphone|ipad|tablet/i.test(userAgent);
-
-  // Prevent redirect loop by excluding the /notallowed route
-  if (isMobile && url.pathname !== "/notallowed") {
-    return NextResponse.redirect(new URL("/notallowed", request.url));
-  }
-
   // Extract user role from token (if user is logged in)
   const userRole = token?.role;
 
+  // Default redirect pages for each role
+  const roleRedirects = {
+    admin: "/homepage",
+    LetterHead: "/letter",
+    SchoolHead: "/students",
+    InventoryHead: "/items",
+    ConductHead: "/conduct",
+  };
+
+  // Protected routes with allowed roles
   const protectedRoutes = {
     "/management": ["admin"],
     "/homepage": ["admin"],
@@ -39,23 +41,26 @@ export async function middleware(request) {
     "/api/users": ["admin"],
   };
 
-  // Default redirect pages for each role
-  const roleRedirects = {
-    admin: "/homepage",
-    LetterHead: "/letter",
-    SchoolHead: "/students",
-    InventoryHead: "/items",
-    ConductHead: "/conduct",
-  };
+  // Redirect based on role if user is authenticated and accessing the root path
+  if (url.pathname === "/") {
+    if (userRole) {
+      const redirectPath = roleRedirects[userRole] || "/homepage";
+      return NextResponse.redirect(new URL(redirectPath, request.url));
+    } else {
+      // Allow unauthenticated users to see the root page
+      return NextResponse.next();
+    }
+  }
 
-  // Check if the route is protected and user has the appropriate role
+  // Check if the route is protected and enforce role-based access
   for (const [route, allowedRoles] of Object.entries(protectedRoutes)) {
     if (url.pathname.startsWith(route)) {
       if (!userRole || !allowedRoles.includes(userRole)) {
         if (url.pathname.startsWith("/api")) {
-          // For APIs, return an error response instead of redirecting
+          // For APIs, return an unauthorized error response
           return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
         } else {
+          // For regular routes, redirect to appropriate role-based page or login
           const redirectPath = roleRedirects[userRole] || "/login";
           return NextResponse.redirect(new URL(redirectPath, request.url));
         }
@@ -67,5 +72,5 @@ export async function middleware(request) {
 }
 
 export const config = {
-  matcher: ["/((?!api/auth|_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!api/auth|_next/static|_next/image|favicon.ico|public).*)"],
 };

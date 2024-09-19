@@ -38,30 +38,16 @@ const LoginPage = () => {
         setIsLoading(true); // Show loading indicator during redirection
         // Optionally redirect or perform any other action here
       }, 1000);
-      const session = await getSession();
 
-      let redirectPath = "/"; // Default redirect path
+      // Let NextAuth handle redirection
+      await signIn("credentials", {
+        redirect: true,
+        callbackUrl: "/", // Redirect to the root path
+        username,
+        password,
+      });
 
       // Redirect user based on their role
-      switch (session?.user?.role) {
-        case "admin":
-          redirectPath = "/homepage";
-          break;
-        case "LetterHead":
-          redirectPath = "/letter";
-          break;
-        case "SchoolHead":
-          redirectPath = "/students";
-          break;
-        case "InventoryHead":
-          redirectPath = "/items";
-          break;
-        case "ConductHead":
-          redirectPath = "/conduct";
-          break;
-        default:
-          redirectPath = "/"; // Default path if role is undefined
-      }
 
       router.push(redirectPath);
     }
